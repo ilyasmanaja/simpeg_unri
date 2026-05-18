@@ -18,7 +18,7 @@
 
             <!-- NAMA DINAMIS -->
             <h4 class="tebal">
-                <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('assets/dosen/data_diri/pfp.jpg') }}"
+                <img src="{{ $pegawai->foto ? asset ($pegawai->foto) : asset('assets/dosen/data_diri/pfp.jpg') }}"
                     alt="Profile"
                     style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;">
                 Selamat Datang, {{ $pegawai->nama_lengkap }} di Sistem Informasi Kepegawaian
