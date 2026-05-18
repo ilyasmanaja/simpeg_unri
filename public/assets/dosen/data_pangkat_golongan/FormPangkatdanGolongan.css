@@ -1,0 +1,120 @@
+/* --- Base Style --- */
+body {
+    background: #f4f6f9;
+    font-family: 'Poppins', sans-serif;
+}
+.container {
+    padding: 20px;
+}
+
+/* --- Card Style --- */
+.form-card {
+    width: 100%;
+    max-width: 720px; /* Batas maksimal lebar agar responsif */
+    border-radius: 16px;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: #fdeaea;
+    color: #d32f2f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* --- Form Elements --- */
+.form-label {
+    color: #121111;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.custom-input {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #d32f2f;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 0 0 0.15rem rgba(211,47,47,0.15);
+    outline: none;
+}
+
+/* Menangani border merah saat input tidak valid (Bootstrap class) */
+.custom-input.is-invalid {
+    border-color: #d32f2f;
+}
+
+/* --- Validation Messages --- */
+small {
+    display: none; /* Sembunyi secara default */
+    font-size: 13px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+/* Memunculkan pesan jika parent-nya memiliki class .active */
+#boxPangkat.active small,
+#boxTMT.active small,
+#boxBerkas.active small {
+    display: block;
+}
+
+small.valid {
+    color: #2e7d32;
+}
+
+small.invalid {
+    color: #d32f2f; 
+}
+
+
+.btn-ajukan {
+    background: linear-gradient(135deg, #e53935, #b71c1c);
+    color: white;
+    border-radius: 8px;
+    border: none;
+    transition: opacity 0.3s;
+}
+
+.btn-ajukan:hover {
+    opacity: 0.9;
+    color: white;
+}
+
+.btn-batal {
+    border: 1px solid #c62828;
+    color: #c62828;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.3s;
+}
+
+.btn-batal:hover {
+    background: #fdeaea;
+    color: #b71c1c;
+}
+
+/* --- Responsive --- */
+@media (max-width: 576px) {
+    .form-card {
+        padding: 1.5rem !important;
+    }
+    .form-label {
+        margin-bottom: 5px;
+    }
+}

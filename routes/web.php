@@ -1,0 +1,12 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dosen\DataDiriController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::prefix('dosen')->group(function () {
+    Route::get('/data-diri', [DataDiriController::class, 'index']);
+});

@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+ 
+ body {
+    background: #f4f6f9;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-card {
+    width: 100%;
+    border-radius: 16px;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: #fdeaea;
+    color: #d32f2f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.custom-input {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+    padding: 10px;
+}
+
+.custom-input:focus {
+    border-color: #d32f2f;
+    background: #fff;
+    box-shadow: 0 0 0 0.15rem rgba(211,47,47,0.15);
+}
+
+.btn-ajukan {
+    background: linear-gradient(135deg, #e53935, #b71c1c);
+    color: white;
+    border-radius: 8px;
+}
+
+.btn-batal {
+    border: 1px solid #c62828;
+    color: #c62828;
+}
+
+small {
+    display: none;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+#box-jabatan.active small,
+#box-tmt.active small,
+#box-berkas.active small {
+    display: block;
+}
+
+small.valid {
+    color: #2e7d32;
+}
+
+small.invalid {
+    color: #d32f2f;
+}

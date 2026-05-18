@@ -1,0 +1,245 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    overflow-x: hidden;
+}
+
+/* --- SIDEBAR --- */
+#wrapper {
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background-color: #ffffff;
+    border-right: 1px solid #eaedf1;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+}
+
+.sidebar-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 30px 20px;
+    color: #2c3e50;
+    line-height: 1.4;
+}
+
+.sidebar-menu, .sidebar-bottom {
+    padding: 0;
+    list-style: none;
+}
+
+.nav-link {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    color: #7f8c8d;
+}
+
+.nav-link:hover {
+    background-color: #f8f9fa;
+    color: #c0392b;
+}
+
+.nav-link:hover i {
+    color: #c0392b;
+}
+
+/* Menu Aktif */
+.nav-link.active {
+    background-color: #fadbd8;
+    color: #c0392b;
+    border-left: 4px solid #c0392b;
+}
+
+.nav-link.active i {
+    color: #c0392b;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+
+.logout-btn {
+    font-weight: 600;
+}
+
+.logout-btn i {
+    color: #dc3545 !important;
+}
+
+/* --- MAIN CONTENT --- */
+.main-content {
+    margin-left: 280px; 
+    padding: 40px;
+    width: calc(100% - 280px);
+}
+
+.custom-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 30px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card-header-custom {
+    margin-bottom: 20px;
+}
+
+.card-header-custom h4 {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.icon-wrapper {
+    background-color: #fadbd8;
+    color: #c0392b;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+.divider {
+    border-top: 1px solid #eaedf1;
+    margin: 0;
+}
+
+.card-body-custom {
+    padding-top: 30px;
+}
+
+/* --- FORM STYLING --- */
+.form-label-custom {
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.form-label-custom i {
+    margin-top: 4px;
+    color: #7f8c8d;
+    width: 16px;
+    text-align: center;
+}
+
+.form-control, .form-select {
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    background-color: #fafafa;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #c0392b;
+    box-shadow: 0 0 0 0.2rem rgba(192, 57, 43, 0.1);
+    background-color: #ffffff;
+}
+
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    color: #7f8c8d;
+}
+
+.custom-file-input::file-selector-button {
+    background-color: #ffffff;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    padding: 5px 15px;
+    margin-right: 15px;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.custom-file-input::file-selector-button:hover {
+    background-color: #f1f2f6;
+}
+
+/* --- BUTTONS --- */
+.btn-ajukan {
+    background-color: #c0392b;
+    color: #ffffff;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.btn-ajukan:hover {
+    background-color: #a93226;
+    color: #ffffff;
+}
+
+.btn-batal {
+    background-color: #ffffff;
+    color: #c0392b;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    border: 1px solid #c0392b;
+    transition: all 0.3s;
+}
+
+.btn-batal:hover {
+    background-color: #fadbd8;
+}
+
+/* --- RESPONSIVE / MENU MOBILE OFFCANVAS --- */
+@media (max-width: 991.98px) {
+    .main-content {
+        margin-left: 0;           
+        width: 100%;              
+        padding: 20px 10px;       
+    }
+    
+    .sidebar {
+        border-right: none;
+    }
+}
+
+/* --- VALIDASI TEKS BAWAH FORM --- */
+.validation-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 6px;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.text-error {
+    color: #dc3545; /* Merah */
+}
+
+.text-success {
+    color: #198754; /* Hijau */
+}
