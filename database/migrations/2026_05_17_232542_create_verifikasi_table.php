@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->date('tanggal_pengajuan')->nullable();
             $table->date('tanggal_proses')->nullable();
             $table->string('keterangan', 255)->nullable();
+            $table->json('berkas_bermasalah')->nullable(); // tambah ini
             $table->string('id_berkas', 30)->nullable();
 
             $table->foreign('id_berkas')->references('id_berkas')->on('BERKAS')->onDelete('cascade');
