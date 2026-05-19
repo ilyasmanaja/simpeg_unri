@@ -118,3 +118,167 @@ small.invalid {
         margin-bottom: 5px;
     }
 }
+/* --- Base Style --- */
+body {
+    background: #f4f6f9;
+    font-family: 'Poppins', sans-serif;
+}
+.container {
+    padding: 20px;
+}
+
+/* --- Card Style --- */
+.form-card {
+    width: 100%;
+    max-width: 720px; /* Batas maksimal lebar agar responsif */
+    border-radius: 16px;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: #fdeaea;
+    color: #d32f2f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+/* --- Form Elements --- */
+.form-label {
+    color: #121111;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.custom-input {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #d32f2f;
+    background: #fff;
+    padding: 10px;
+    box-shadow: 0 0 0 0.15rem rgba(211,47,47,0.15);
+    outline: none;
+}
+
+/* Menangani border merah saat input tidak valid (Bootstrap class) */
+.custom-input.is-invalid {
+    border-color: #d32f2f;
+}
+
+/* --- Validation Messages --- */
+small {
+    display: none; /* Sembunyi secara default */
+    font-size: 13px;
+    margin-top: 5px;
+    font-weight: 400;
+}
+
+/* Memunculkan pesan jika parent-nya memiliki class .active */
+#boxPangkat.active small,
+#boxTMT.active small,
+#boxBerkas.active small {
+    display: block;
+}
+
+small.valid {
+    color: #2e7d32;
+}
+
+small.invalid {
+    color: #d32f2f; 
+}
+
+
+.btn-ajukan {
+    background: #43a047;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-ajukan:hover {
+    background:#1b5e20;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.btn-batal {
+    background :  #656363;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-batal:hover {
+    background:  #100f0f;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+/* --- Responsive --- */
+@media (max-width: 576px) {
+    .form-card {
+        padding: 1.5rem !important;
+    }
+    .form-label {
+        margin-bottom: 5px;
+    }
+}
+/* FORM CARDS */
+.form-main-card { border-radius: 20px; border: none; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden; }
+.form-header-stripe {
+    background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+    padding: 22px 30px; display: flex; align-items: center; gap: 14px; color: #fff;
+}
+.form-header-stripe .fh-icon {
+    background: rgba(255,255,255,0.15); border-radius: 12px; width: 48px; height: 48px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+}
+.form-header-stripe h5 { margin: 0; font-weight: 700; font-size: 1.1rem; }
+.form-header-stripe p  { margin: 0; font-size: 0.8rem; opacity: 0.8; }
+.form-label-custom { font-weight: 600; font-size: 0.85rem; color: #374151; margin-bottom: 5px; }
+.pangkat-info-box {
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #166534;
+}
+.alert-pending { border-left: 4px solid #f59e0b; border-radius: 10px; }
+
+/* BERKAS SECTION */
+.berkas-section {
+    background: #fafafa; border: 1.5px dashed #e5e7eb;
+    border-radius: 14px; padding: 20px 22px;
+}
+.berkas-section .berkas-title {
+    font-weight: 700; font-size: 0.88rem; color: #374151;
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;
+}
+.berkas-badge {
+    display: inline-block; background: #fee2e2; color: #b91c1c;
+    border-radius: 4px; font-size: 0.68rem; padding: 2px 7px;
+    font-weight: 600; margin-left: 6px; vertical-align: middle;
+}
+.berkas-badge.optional { background: #e0f2fe; color: #0369a1; }
+.berkas-item {
+    display: flex; flex-direction: column;
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+}
+.berkas-item label { font-weight: 600; font-size: 0.83rem; color: #374151; margin-bottom: 6px; display: block; }
+.berkas-item .berkas-desc { font-size: 0.75rem; color: #6b7280; margin-bottom: 8px; }
