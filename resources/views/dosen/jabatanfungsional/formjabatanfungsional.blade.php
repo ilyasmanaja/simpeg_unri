@@ -47,13 +47,13 @@
         </ul>
     </div>
 @endif
-<div class="col main">
+<div class="main">
     <div class="main-inner" style="padding-top: 32px;">
         <div class="container mb-5" style="max-width: 720px;">
 
             {{-- Breadcrumb --}}
             <nav class="mb-3">
-                <a href="{{ route('jabatanfungsional.index') }}"
+                <a href="{{ route('dosen.jabatanfungsional.index') }}"
                    class="text-muted text-decoration-none" style="font-size:0.85rem;">
                     <i class="bi bi-arrow-left me-1"></i>Kembali ke Daftar
                 </a>
@@ -118,7 +118,7 @@
                     <div class="text-center py-4 text-muted">
                         <i class="bi bi-patch-check-fill text-danger" style="font-size:3rem;"></i>
                         <p class="mt-3">Tidak ada pengajuan yang bisa dilakukan.</p>
-                        <a href="{{ route('jabatanfungsional.index') }}"
+                        <a href="{{ route('dosen.jabatanfungsional.index') }}"
                            class="btn btn-outline-secondary btn-sm">Kembali</a>
                     </div>
 
@@ -127,17 +127,17 @@
                     {{-- ══ FORM ══ --}}
                     @if ($isRevisi)
                         <form method="POST"
-                              action="{{ route('jabatanfungsional.simpanRevisi', $pengajuan->id_pengajuan) }}"
+                              action="{{ route('dosen.jabatanfungsional.simpanRevisi', $pengajuan->id_pengajuan) }}"
                               enctype="multipart/form-data" id="formJabfung">
                             @method('PUT')
                     @elseif ($isEdit)
                         <form method="POST"
-                              action="{{ route('jabatanfungsional.update', $pengajuan->id_pengajuan) }}"
+                              action="{{ route('dosen.jabatanfungsional.update', $pengajuan->id_pengajuan) }}"
                               enctype="multipart/form-data" id="formJabfung">
                             @method('PUT')
                     @else
                         <form method="POST"
-                              action="{{ route('jabatanfungsional.store') }}"
+                              action="{{ route('dosen.jabatanfungsional.store') }}"
                               enctype="multipart/form-data" id="formJabfung">
                     @endif
                     @csrf
@@ -394,7 +394,7 @@
 
                     {{-- ── TOMBOL AKSI ── --}}
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                        <a href="{{ route('jabatanfungsional.index') }}" class="btn-batal btn">
+                        <a href="{{ route('dosen.jabatanfungsional.index') }}" class="btn-batal btn">
                             <i class="bi bi-arrow-left me-1"></i>Batal
                         </a>
                         <button type="button"

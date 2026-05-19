@@ -28,8 +28,8 @@ return new class extends Migration {
             $table->string('nip', 18)->unique()->nullable();
             $table->string('status_pegawai', 50)->nullable();
 
-            $table->foreignId('id_jabfung', 10)->nullable();
-            $table->foreignId('id_panggol', 10)->nullable();
+            $table->foreignId('id_jabfung')->nullable();
+            $table->foreignId('id_panggol')->nullable();
 
             $table->foreign('id_jabfung')->references('id_jabfung')->on('JABATAN_FUNGSIONAL');
             $table->foreign('id_panggol')->references('id_panggol')->on('PANGKAT_GOLONGAN');

@@ -35,7 +35,7 @@ class JabatanFungsionalController extends Controller
 
     private function getPegawai(): Pegawai
     {
-        $idPegawai = session('id_pegawai', 5);
+        $idPegawai = session('id_pegawai', 1);
         return Pegawai::findOrFail($idPegawai);
     }
 
@@ -105,7 +105,7 @@ class JabatanFungsionalController extends Controller
 
         $namaJabfungNow = $pegawai->jabatanFungsional?->jenis_jabfung;
 
-        return view('jabatanfungsional.readjabatanfungsional', compact(
+        return view('dosen.jabatanfungsional.readjabatanfungsional', compact(
             'pegawai', 'pengajuan', 'namaJabfungNow'
         ));
     }
@@ -120,7 +120,7 @@ class JabatanFungsionalController extends Controller
         $jenis   = $this->getJenis($pegawai);
 
         if ($pegawai->status_pegawai !== 'ASN') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Fitur ini hanya untuk pegawai berstatus ASN.');
         }
 
@@ -131,7 +131,7 @@ class JabatanFungsionalController extends Controller
             ->whereIn('status_pengajuan', ['menunggu', 'verifikasi', 'persetujuan'])
             ->exists();
 
-        return view('jabatanfungsional.formjabatanfungsional', array_merge(
+        return view('dosen.jabatanfungsional.formjabatanfungsional', array_merge(
             compact('pegawai', 'jenis', 'adaPending'),
             $data
         ));
@@ -189,11 +189,11 @@ class JabatanFungsionalController extends Controller
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai);
 
             DB::commit();
-            return redirect()->route('jabatanfungsional.index')->with('success', 'sukses');
+            return redirect()->route('dosen.jabatanfungsional.index')->with('success', 'sukses');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('jabatanfungsional.index')->with('error', $e->getMessage());
+            return redirect()->route('dosen.jabatanfungsional.index')->with('error', $e->getMessage());
         }
     }
 
@@ -211,14 +211,14 @@ class JabatanFungsionalController extends Controller
             ->findOrFail($id);
 
         if ($pengajuan->status_pengajuan !== 'menunggu') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Hanya pengajuan berstatus Menunggu yang dapat diedit.');
         }
 
         $data      = $this->buildJabfungData($pegawai, $jenis);
         $berkasAda = $pengajuan->berkas->keyBy('jenis_berkas');
 
-        return view('jabatanfungsional.formjabatanfungsional', array_merge(
+        return view('dosen.jabatanfungsional.formjabatanfungsional', array_merge(
             compact('pegawai', 'jenis', 'pengajuan', 'berkasAda'),
             $data
         ));
@@ -237,7 +237,7 @@ class JabatanFungsionalController extends Controller
             ->findOrFail($id);
 
         if ($pengajuan->status_pengajuan !== 'menunggu') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Pengajuan ini tidak bisa diedit.');
         }
 
@@ -271,11 +271,11 @@ class JabatanFungsionalController extends Controller
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai, $berkasAda);
 
             DB::commit();
-            return redirect()->route('jabatanfungsional.index')->with('success', 'perbarui');
+            return redirect()->route('dosen.jabatanfungsional.index')->with('success', 'perbarui');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('jabatanfungsional.index')->with('error', $e->getMessage());
+            return redirect()->route('dosen.jabatanfungsional.index')->with('error', $e->getMessage());
         }
     }
 
@@ -293,7 +293,7 @@ class JabatanFungsionalController extends Controller
             ->findOrFail($id);
 
         if ($pengajuan->status_pengajuan !== 'tolak_verifikasi') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Hanya pengajuan yang ditolak yang dapat direvisi.');
         }
 
@@ -301,7 +301,7 @@ class JabatanFungsionalController extends Controller
         $berkasAda        = $pengajuan->berkas->keyBy('jenis_berkas');
         $berkasBermasalah = $pengajuan->berkas_bermasalah;
 
-        return view('jabatanfungsional.formjabatanfungsional', array_merge(
+        return view('dosen.jabatanfungsional.formjabatanfungsional', array_merge(
             compact('pegawai', 'jenis', 'pengajuan', 'berkasAda', 'berkasBermasalah'),
             $data
         ));
@@ -320,7 +320,7 @@ class JabatanFungsionalController extends Controller
             ->findOrFail($id);
 
         if ($pengajuan->status_pengajuan !== 'tolak_verifikasi') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Pengajuan ini tidak bisa direvisi.');
         }
 
@@ -350,11 +350,11 @@ class JabatanFungsionalController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('jabatanfungsional.index')->with('success', 'revisi');
+            return redirect()->route('dosen.jabatanfungsional.index')->with('success', 'revisi');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('jabatanfungsional.index')->with('error', $e->getMessage());
+            return redirect()->route('dosen.jabatanfungsional.index')->with('error', $e->getMessage());
         }
     }
 
@@ -370,7 +370,7 @@ class JabatanFungsionalController extends Controller
             ->findOrFail($id);
 
         if ($pengajuan->status_pengajuan !== 'menunggu') {
-            return redirect()->route('jabatanfungsional.index')
+            return redirect()->route('dosen.jabatanfungsional.index')
                 ->with('error', 'Pengajuan yang sudah diproses tidak dapat dihapus.');
         }
 
@@ -385,11 +385,11 @@ class JabatanFungsionalController extends Controller
             $pengajuan->delete();
 
             DB::commit();
-            return redirect()->route('jabatanfungsional.index')->with('success', 'hapus');
+            return redirect()->route('dosen.jabatanfungsional.index')->with('success', 'hapus');
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('jabatanfungsional.index')->with('error', $e->getMessage());
+            return redirect()->route('dosen.jabatanfungsional.index')->with('error', $e->getMessage());
         }
     }
 

@@ -1,14 +1,28 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dosen\DataDiriController;
 
+// Halaman utama / Welcome
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('dosen')->group(function () {
-    Route::get('/data-diri', [DataDiriController::class, 'index']);
+// ==========================================
+// GROUP UTAMA: DOSEN
+// ==========================================
+Route::prefix('dosen')->name('dosen.')->group(function () {
+    
+    // Semua route di dalam file ini otomatis diawali: /dosen/
+    require __DIR__.'/dosen.php';
+    
 });
 
-require __DIR__.'/operator.php';
+// ==========================================
+// GROUP UTAMA: OPERATOR
+// ==========================================
+Route::prefix('operator')->name('operator.')->group(function () {
+    
+    // Semua route di dalam file ini otomatis diawali: /operator/
+    // require __DIR__.'/operator.php';
+    
+});

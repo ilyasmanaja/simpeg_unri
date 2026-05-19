@@ -24,13 +24,18 @@ hr {
 }
 
 .sidebar {
-    width: 270px;
+    width: 260px; 
+    min-width: 260px; /* Pilih salah satu ukuran yang pas (260/270) */
+    flex-shrink: 0; 
     padding-top: 20px;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
     box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    height: 100vh; 
+    overflow-y: auto;
 }
 
 .sidebar h4 {

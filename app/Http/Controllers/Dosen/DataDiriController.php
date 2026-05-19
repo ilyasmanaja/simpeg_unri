@@ -29,6 +29,6 @@ class DataDiriController extends Controller
         }
 
         // Melempar variabel $pegawai ke file View Blade
-        return view('dosen.data_diri.index', compact('pegawai'));
+        return view('dosen.datadiri.index', compact('pegawai'));
     }
 }

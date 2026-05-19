@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-<div class="col main">
+<div class="main">
 
     {{-- ── Header ── --}}
     <div class="page-header">
@@ -38,7 +38,7 @@
                     <div class="jab-sub">{{ $pegawai->nama_lengkap }}</div>
                 </div>
             </div>
-            <a href="{{ route('jabatanfungsional.create') }}" class="btn-ajukan-top">
+            <a href="{{ route('dosen.jabatanfungsional.create') }}" class="btn-ajukan-top">
                 <i class="bi bi-plus-circle"></i> Ajukan Kenaikan
             </a>
         </div>
@@ -121,7 +121,7 @@
 
                                 {{-- Menunggu → Perbarui, Hapus, Detail --}}
                                 @if ($row->status_pengajuan === 'menunggu')
-                                    <a href="{{ route('jabatanfungsional.edit', $row->id_pengajuan) }}"
+                                    <a href="{{ route('dosen.jabatanfungsional.edit', $row->id_pengajuan) }}"
                                        class="btn btn-primary btn-aksi">
                                         <i class="bi bi-pencil me-1"></i>Perbarui
                                     </a>
@@ -154,7 +154,7 @@
                                             class="btn btn-secondary btn-aksi">
                                         <i class="bi bi-eye me-1"></i>Detail
                                     </button>
-                                    <a href="{{ route('jabatanfungsional.revisi', $row->id_pengajuan) }}"
+                                    <a href="{{ route('dosen.jabatanfungsional.revisi', $row->id_pengajuan) }}"
                                        class="btn btn-warning btn-aksi">
                                         <i class="bi bi-arrow-repeat me-1"></i>Revisi
                                     </a>

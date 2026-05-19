@@ -4,11 +4,12 @@
 
 @push('styles')
     <!-- Pastikan file style.css kamu sudah ada di folder public/assets/dosen/data_diri/ -->
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dosen/data_diri/style.css') }}">
 @endpush
 
 @section('content')
-    <div class="col main col-12 col-lg">
+    <div class="main">
         <div class="header">
             <!-- Tombol Hamburger Mobile -->
             <button class="btn btn-menu text-white d-lg-none mb-3" type="button" data-bs-toggle="offcanvas"
@@ -24,7 +25,7 @@
                 Selamat Datang, {{ $pegawai->nama_lengkap }} di Sistem Informasi Kepegawaian
             </h4>
 
-            <div class="card-1 mt-3">
+            <div class="product-card mt-3">
                 <div class="container py-5" style="max-width: 950px;">
                     <div class="settings-header">
                         <h1 class="section-title">Data Diri Dosen / Teknik</h1>
