@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id('id_pengajuan');
             $table->foreignId('id_pegawai');
             $table->string('jenis_pengajuan', 20);
-            $table->string('target_panggol', 10)->nullable();
-            $table->string('target_jabfung', 10)->nullable();
+            $table->foreignId('target_panggol')->nullable();
+            $table->foreignId('target_jabfung')->nullable();
             $table->string('status_pengajuan', 50)->default('PENDING');
             $table->string('keterangan_tambahan', 255)->nullable();
 
