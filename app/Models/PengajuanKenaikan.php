@@ -6,19 +6,85 @@ use Illuminate\Database\Eloquent\Model;
 
 class PengajuanKenaikan extends Model
 {
-    protected $table = 'PENGAJUAN_KENAIKAN';
+    protected $table      = 'PENGAJUAN_KENAIKAN';
     protected $primaryKey = 'id_pengajuan';
-    public $incrementing = false;
-    public $timestamps = false;
-    protected $guarded = [];
+    public    $incrementing = true;
+    public    $timestamps   = false;
 
+    protected $fillable = [
+        'id_pegawai',
+        'jenis_pengajuan',
+        'target_panggol',
+        'target_jabfung',
+        'status_pengajuan',
+        'nomor_usulan',
+        'keterangan_tambahan',
+        'tanggal_pengajuan',
+    ];
+
+    // ── Relasi ──────────────────────────────────────────────
     public function pegawai()
     {
         return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
 
+    public function jabatanFungsional()
+    {
+        return $this->belongsTo(JabatanFungsional::class, 'target_jabfung', 'id_jabfung');
+    }
+
     public function berkas()
     {
         return $this->hasMany(Berkas::class, 'id_pengajuan', 'id_pengajuan');
+    }
+
+    // ── Helper status ────────────────────────────────────────
+    /**
+     * Kembalikan label, badge class, dan icon Bootstrap Icons
+     * sesuai status_pengajuan.
+     */
+    public function getStatusInfoAttribute(): array
+    {
+        $map = [
+            'menunggu'           => [
+                'label' => 'Menunggu Diproses',
+                'class' => 'badge-menunggu',
+                'icon'  => 'bi-hourglass-split',
+            ],
+            'verifikasi'         => [
+                'label' => 'Sedang Diverifikasi',
+                'class' => 'badge-verifikasi',
+                'icon'  => 'bi-search',
+            ],
+            'persetujuan'        => [
+                'label' => 'Menunggu Persetujuan',
+                'class' => 'badge-persetujuan',
+                'icon'  => 'bi-clock-history',
+            ],
+            'disetujui'          => [
+                'label' => 'Disetujui',
+                'class' => 'badge-disetujui',
+                'icon'  => 'bi-check-circle-fill',
+            ],
+            'tolak_verifikasi'   => [
+                'label' => 'Ditolak (Verifikasi)',
+                'class' => 'badge-ditolak',
+                'icon'  => 'bi-x-circle-fill',
+            ],
+            'tolak_persetujuan'  => [
+                'label' => 'Ditolak (Persetujuan)',
+                'class' => 'badge-ditolak',
+                'icon'  => 'bi-x-circle-fill',
+            ],
+        ];
+
+        return $map[$this->status_pengajuan]
+            ?? ['label' => ucfirst($this->status_pengajuan), 'class' => 'badge-menunggu', 'icon' => 'bi-question-circle'];
+    }
+
+    // ── Scope: hanya jabfung ─────────────────────────────────
+    public function scopeJabfung($query)
+    {
+        return $query->where('jenis_pengajuan', 'jabfung');
     }
 }

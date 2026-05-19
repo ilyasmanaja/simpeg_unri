@@ -6,13 +6,67 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pegawai extends Model
 {
-    protected $table = 'PEGAWAI';
+    protected $table      = 'pegawai';
     protected $primaryKey = 'id_pegawai';
-    public $incrementing = false; 
-    public $timestamps = false;
-    protected $guarded = [];
+    public    $timestamps = false;
 
-    // Relasi ke tabel referensi
+    protected $fillable = [
+        'nama_lengkap',
+        'foto',
+        'nik',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'nomor_hp',
+        'jurusan',
+        'prodi',
+        'nomor_hp_darurat',
+        'nidn',
+        'nip',
+        'status_pegawai',
+        'id_jabfung',
+        'id_panggol',
+    ];
+
+    // ----------------------------------------------------------------
+    // ACCESSOR
+    // ----------------------------------------------------------------
+
+    /**
+     * Nomor identitas: NIDN untuk dosen, NIP untuk tendik.
+     * Logika: kalau nidn terisi → dosen, kalau nip terisi → tendik.
+     */
+    public function getNomorIdentitasAttribute(): string
+    {
+        if (!empty($this->nidn)) {
+            return 'NIDN: ' . $this->nidn;
+        }
+
+        if (!empty($this->nip)) {
+            return 'NIP: ' . $this->nip;
+        }
+
+        return '-';
+    }
+
+    /**
+     * Jenis pegawai berdasarkan nidn/nip.
+     */
+    public function getJenisPegawaiAttribute(): string
+    {
+        if (!empty($this->nidn)) return 'Dosen';
+        if (!empty($this->nip))  return 'Tendik';
+        return 'Tidak Diketahui';
+    }
+
+    // ----------------------------------------------------------------
+    // RELASI
+    // ----------------------------------------------------------------
+
+    public function userManage()
+    {
+        return $this->hasOne(UserManage::class, 'id_pegawai', 'id_pegawai');
+    }
+
     public function jabatanFungsional()
     {
         return $this->belongsTo(JabatanFungsional::class, 'id_jabfung', 'id_jabfung');
@@ -23,15 +77,9 @@ class Pegawai extends Model
         return $this->belongsTo(PangkatGolongan::class, 'id_panggol', 'id_panggol');
     }
 
-    // Relasi ke tabel turunan
-    public function user()
+    public function anggota()
     {
-        return $this->hasOne(UserManage::class, 'id_pegawai', 'id_pegawai');
-    }
-
-    public function pengajuanKenaikan()
-    {
-        return $this->hasMany(PengajuanKenaikan::class, 'id_pegawai', 'id_pegawai');
+        return $this->hasMany(Anggota::class, 'id_pegawai', 'id_pegawai');
     }
 
     public function berkas()
