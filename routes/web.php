@@ -8,10 +8,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('dosen')->group(function () {
-    Route::get('/data-diri', [DataDiriController::class, 'index']);
-});
-
 Route::get('/data-diri/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
 Route::put('/data-diri/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
 Route::get('/data-diri/{id}', [PegawaiController::class, 'show'])->name('pegawai.show');

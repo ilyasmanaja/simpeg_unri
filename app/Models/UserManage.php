@@ -3,29 +3,52 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class UserManage extends Authenticatable
 {
-    protected $table = 'USER_MANAGE';
+    use Notifiable;
+
+    protected $table = 'user_manage';
     protected $primaryKey = 'id_user';
     public $incrementing = false;
     public $timestamps = false;
-    protected $guarded = [];
-    protected $hidden = ['password']; // Sembunyikan password saat data dipanggil
 
+    protected $fillable = [
+        'email',
+        'password',
+        'id_pegawai',
+    ];
+
+    protected $hidden = [
+        'password',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    // Relasi ke pegawai
     public function pegawai()
     {
         return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
 
+    // Relasi Many-to-Many ke role melalui user_role
     public function roles()
     {
-        // Relasi Many-to-Many ke ROLE
-        return $this->belongsToMany(Role::class, 'USER_ROLE', 'id_user', 'id_role');
+        return $this->belongsToMany(Role::class, 'user_role', 'id_user', 'id_role');
     }
 
-    public function hasRole($roleName)
+    /**
+     * Ambil jenis_role pertama yang dimiliki user.
+     * Contoh penggunaan: Auth::user()->jenis_role
+     */
+    public function getJenisRoleAttribute(): ?string
     {
-        return $this->roles->contains('jenis_role', $roleName);
+        return $this->roles->first()?->jenis_role;
     }
 }

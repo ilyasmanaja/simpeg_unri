@@ -1,11 +1,11 @@
-@extends('template.main')
+@extends('layouts.app')
 
 @section('in', 'active')
 
 @section('konten')
 <div class="header">
     <h4 class="tebal">
-        <img src="{{ asset('pfp.jpg') }}" alt=""> Selamat Datang, {{ Auth::user()->nama ?? 'User' }} di Sistem Informasi Kepegawaian
+        <img src="{{ asset('pfp.jpg') }}" alt=""> Selamat Datang, {{ Auth::user()->pegawai->nama_lengkap ?? 'User' }} di Sistem Informasi Kepegawaian
     </h4>
 </div>
 
@@ -13,7 +13,7 @@
     <div class="container py-5" style="max-width: 950px;">
         <div class="settings-header">
             <h1 class="section-title">Data Diri</h1>
-            <p class="section-subtitle">Portal data diri Teknik Informatika - Fakultas Teknik.</p>
+            <p class="section-subtitle">Portal data diri Fakultas Teknik.</p>
         </div>
 
         {{-- Profile Header Section --}}
@@ -23,7 +23,8 @@
             {{-- Avatar --}}
             <div class="profile-avatar-wrapper" style="position: relative; flex-shrink: 0;">
                 <div style="width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 3px solid #CE2D2D; box-shadow: 0 4px 15px rgba(206,45,45,0.2);">
-                    <img src="{{ asset('pfp.jpg') }}" alt="Foto Profil"
+                    <img src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : asset('pfp.jpg') }}"
+                         alt="Foto Profil"
                          style="width: 100%; height: 100%; object-fit: cover;"
                          onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($pegawai->nama_lengkap ?? 'User') }}&background=CE2D2D&color=fff&size=90';">
                 </div>
@@ -35,7 +36,7 @@
             <div style="flex: 1; min-width: 0;">
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <h3 class="mb-0 fw-bold text-truncate" style="color: #1a1a2e; font-size: 1.35rem; letter-spacing: 0.3px;">
-                        {{ strtoupper($pegawai->nama_lengkap ?? Auth::user()->nama ?? 'User') }}
+                        {{ strtoupper($pegawai->nama_lengkap ?? 'User') }}
                     </h3>
                     {{-- Verified badge --}}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" title="Terverifikasi">
@@ -49,7 +50,7 @@
                     </span>
                     <span class="text-muted small d-flex align-items-center gap-1">
                         <i class="fa-solid fa-building-columns" style="color: #CE2D2D;"></i>
-                        Teknik Informatika
+                        {{ $pegawai->jurusan ?? 'Teknik Informatika' }}
                     </span>
                     <span class="text-muted small d-flex align-items-center gap-1">
                         <i class="fa-solid fa-envelope" style="color: #CE2D2D;"></i>
@@ -58,7 +59,7 @@
                 </div>
                 <div class="mt-2">
                     <span class="badge" style="background: rgba(206,45,45,0.12); color: #CE2D2D; font-size: 0.72rem; font-weight: 600; border-radius: 20px; padding: 3px 10px;">
-                        {{ Auth::user()->role ?? 'Pegawai' }}
+                        {{ Auth::user()->jenis_role ?? 'Pegawai' }}
                     </span>
                 </div>
             </div>
@@ -67,7 +68,7 @@
 
         <div class="mb-5">
             <h5 class="fw-bold mb-1" style="color: var(--unri-red);">Identitas Resmi</h5>
-            <p class="text-muted small mb-4">Data utama yang terverifikasi oleh operator kepegawaian.</p>
+            <p class="text-muted small mb-4">Data identitas resmi yang telah tervalidasi.</p>
 
             <div class="data-row">
                 <div class="data-label">NIK</div>
@@ -84,7 +85,7 @@
                     </div>
                 </div>
 
-            @if(optional(Auth::user())->role == 'Dosen')
+                @if(Auth::user()->jenis_role == 'Dosen')
                 <div class="data-row">
                     <div class="data-label">NIDN</div>
                     <div class="data-value">
@@ -93,12 +94,12 @@
                         </span>
                     </div>
                 </div>
-            @endif
+                @endif
 
                 <div class="data-row">
                     <div class="data-label">Homebase</div>
                     <div class="data-value text-uppercase fw-bold">
-                        <span class="locked-field"><i class="fa-solid fa-university"></i> Teknik Informatika</span>
+                        <span class="locked-field"><i class="fa-solid fa-university"></i> {{ $pegawai->jurusan ?? 'Teknik Informatika' }}</span>
                     </div>
                 </div>
             @endif
@@ -114,7 +115,7 @@
                         <i class="bi bi-lock"></i> Ganti Password
                     </a>
 
-                    @if(empty($pegawai->nomor_hp) || empty($pegawai->nomor_hp_darurat) || empty($pegawai->alamat))
+                    @if(empty($pegawai->nomor_hp) || empty($pegawai->nomor_hp_darurat))
                         <a href="{{ route('pegawai.edit', $pegawai->id_pegawai) }}" class="btn btn-danger btn-sm">
                             <i class="bi bi-plus-circle"></i> Lengkapi Biodata
                         </a>
@@ -125,11 +126,15 @@
                     @endif
                 </div>
             </div>
-            <p class="text-muted small mb-4">Kelola nomor kontak untuk kebutuhan administrasi.</p>
+            <p class="text-muted small mb-4">Detail informasi personal.</p>
 
             <div class="data-row">
                 <div class="data-label">Tanggal Lahir</div>
                 <div class="data-value">{{ \Carbon\Carbon::parse($pegawai->tanggal_lahir)->translatedFormat('d F Y') }}</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Jenis Kelamin</div>
+                <div class="data-value">{{ $pegawai->jenis_kelamin == 'L' ? 'Laki-laki' : ($pegawai->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</div>
             </div>
             <div class="data-row">
                 <div class="data-label">Nomor HP Aktif</div>
@@ -140,8 +145,12 @@
                 <div class="data-value">{{ $pegawai->nomor_hp_darurat ?? 'Belum diisi' }}</div>
             </div>
             <div class="data-row">
-                <div class="data-label">Alamat</div>
-                <div class="data-value">{{ $pegawai->alamat ?? 'Belum diisi' }}</div>
+                <div class="data-label">Jurusan</div>
+                <div class="data-value">{{ $pegawai->jurusan ?? '-' }}</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">Prodi</div>
+                <div class="data-value">{{ $pegawai->prodi ?? '-' }}</div>
             </div>
         </div>
     </div>

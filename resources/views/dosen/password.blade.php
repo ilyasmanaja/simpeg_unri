@@ -1,4 +1,4 @@
-@extends('template.main')
+@extends('layouts.app')
 
 @section('in', 'active')
 
@@ -10,7 +10,7 @@
     </button>
 
     <h4 class="tebal">
-        <img src="{{ asset('pfp.jpg') }}" alt=""> Selamat Datang, {{ Auth::user()->nama_lengkap ?? 'User' }} di Sistem Informasi Kepegawaian
+        <img src="{{ asset('pfp.jpg') }}" alt=""> Selamat Datang, {{ Auth::user()->pegawai->nama_lengkap ?? 'User' }} di Sistem Informasi Kepegawaian
     </h4>
 </div>
 

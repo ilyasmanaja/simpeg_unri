@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pegawai extends Model
 {
-    protected $table = 'PEGAWAI';
+    protected $table = 'pegawai';
     protected $primaryKey = 'id_pegawai';
-    public $incrementing = false; 
+    public $incrementing = false;
     public $timestamps = false;
     protected $guarded = [];
 
     protected $fillable = [
         'nama_lengkap',
+        'foto',
         'nik',
         'nip',
         'nidn',
@@ -21,9 +22,11 @@ class Pegawai extends Model
         'jenis_kelamin',
         'nomor_hp',
         'nomor_hp_darurat',
-        'alamat',
+        'jurusan',
+        'prodi',
         'status_pegawai',
-        'user_id_user'
+        'id_jabfung',
+        'id_panggol',
     ];
 
     // Relasi ke tabel referensi
@@ -41,6 +44,11 @@ class Pegawai extends Model
     public function user()
     {
         return $this->hasOne(UserManage::class, 'id_pegawai', 'id_pegawai');
+    }
+
+    public function anggota()
+    {
+        return $this->hasMany(Anggota::class, 'id_pegawai', 'id_pegawai');
     }
 
     public function pengajuanKenaikan()
