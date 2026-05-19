@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id('id_anggota');
             $table->string('jenis_anggota', 255)->nullable();
             $table->string('nama_anggota', 255)->nullable();
-            $table->foreignId('id_surat_tugas', 10)->nullable();
+            $table->foreignId('id_surat_tugas')->nullable();
             $table->foreignId('id_pegawai')->nullable();
 
             $table->foreign('id_surat_tugas')->references('id_surat_tugas')->on('SURAT_TUGAS')->onDelete('cascade');
