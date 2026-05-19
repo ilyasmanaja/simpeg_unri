@@ -9,3 +9,199 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+body {
+    font-family: 'Poppins';
+}
+
+.sidebar {
+    width: 320px;
+    padding-top: 20px;
+    background-color: #FFFFFF;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h4 {    
+    margin-top: 10px;
+    padding: 18px 20px;
+    display: block;
+    color: #2A2A2A;
+    font-weight: 700;
+}
+
+
+.sidebar a {    
+    padding: 18px 20px;
+    display: block;
+    color: #2A2A2A;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sidebar a:hover {
+    background-color: #EACACA;
+    
+}
+
+.sidebar a.active {    
+    padding: 18px 20px;
+    background-color: #EACACA;
+    display: block;
+    color: #CE2D2D;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sidebar a svg {
+    margin-right: 15px;
+}
+
+.sidebar a.keluar{    
+    padding: 18px 20px;
+    display: block;
+    color: #CE2D2D;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.sidebar a img{    
+    width: 40px;
+    border-radius: 50px;
+    margin-right: 15px;
+}
+
+.main{
+    background-color: #F5F7FB;
+    padding: 35px;
+}
+
+.main .card-1{
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 15px;
+}
+
+.main .header{
+    margin-top: 10px;
+}
+
+.main img{
+    width: 50px;
+    border-radius: 50px;
+    margin-right: 20px;
+}
+
+.main h4{
+    font-weight: 600;
+}
+
+hr {
+    border: none;
+    height: 3px;
+    background-color: #CE2D2D;
+    opacity: 1;
+    border-radius: 30px;
+}
+
+.btn-menu{
+    background-color: #CE2D2D;
+}
+
+.menu-mobile {
+    padding: 10px 5px;
+    color: #2A2A2A;
+    letter-spacing: 0.5px;
+}
+
+.offcanvas-header {
+    background-color: #F5F7FB; 
+}
+
+:root {
+            --unri-red: #8b0000; 
+            --unri-red-light: #fff5f5;
+            --unri-red-muted: #fca5a5;
+        }
+
+        
+        .settings-header { 
+            border-bottom: 2px solid var(--unri-red); 
+            padding-bottom: 20px; 
+            margin-bottom: 20px; }
+        .section-title { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            margin-bottom: 5px; 
+            color: var(--unri-red); 
+            text-transform: uppercase; 
+            letter-spacing: 3px; }
+        .section-subtitle {
+             color: #666; 
+             font-size: 1rem; 
+             margin-bottom: 25px; }
+        
+        .data-row { 
+            display: grid; 
+            grid-template-columns: 300px 1fr; 
+            padding: 22px 0; 
+            border-top: 1px solid #f0f0f0; 
+        }
+
+        @media (max-width: 768px) {
+            .data-row {
+                grid-template-columns: 1fr;
+                padding: 15px 0;
+            }
+            .data-label {
+                margin-bottom: 8px;
+                font-size: 0.9rem;
+            }
+            .section-title {
+                font-size: 1.25rem;
+            }
+        }
+
+        .data-label { 
+            font-weight: 600; 
+            color: #444; }
+        .data-value { 
+            color: #000; 
+            font-weight: 400; 
+        }
+        
+        .locked-field { 
+            background-color: var(--unri-red-light); 
+            padding: 6px 14px; 
+            border-radius: 8px; 
+            display: inline-flex; 
+            align-items: center; 
+            border: 1px solid var(--unri-red-muted); 
+            color: var(--unri-red); 
+            font-weight: 500;
+            max-width: 100%;
+        }
+        .locked-field i { 
+            font-size: 0.85rem; 
+            margin-right: 10px; 
+            opacity: 0.8; }
+        
+        .btn-submission { 
+            background-color: var(--unri-red); 
+            color: #fff;
+            border-radius: 10px; 
+            padding: 12px 28px; 
+            font-weight: 600; 
+            border: none; 
+            transition: all 0.3s ease; 
+        }
+        .btn-submission:hover { 
+            background-color: #6a0000; 
+            color: #fff; }
+
+        .action-card {
+            background-color: var(--unri-red-light);
+        }

@@ -12,6 +12,20 @@ class Pegawai extends Model
     public $timestamps = false;
     protected $guarded = [];
 
+    protected $fillable = [
+        'nama_lengkap',
+        'nik',
+        'nip',
+        'nidn',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'nomor_hp',
+        'nomor_hp_darurat',
+        'alamat',
+        'status_pegawai',
+        'user_id_user'
+    ];
+
     // Relasi ke tabel referensi
     public function jabatanFungsional()
     {
