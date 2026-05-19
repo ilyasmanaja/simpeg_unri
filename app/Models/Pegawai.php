@@ -8,9 +8,24 @@ class Pegawai extends Model
 {
     protected $table = 'PEGAWAI';
     protected $primaryKey = 'id_pegawai';
-    public $incrementing = false; 
+    
     public $timestamps = false;
     protected $guarded = [];
+    protected $fillable = [
+        'nama_lengkap',
+        'nik',
+        'nip',
+        'nidn',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'nomor_hp',
+        'jurusan',
+        'prodi',
+        'status_pegawai',
+        'foto',
+        'id_jabfung',
+        'id_panggol'
+    ];
 
     // Relasi ke tabel referensi
     public function jabatanFungsional()

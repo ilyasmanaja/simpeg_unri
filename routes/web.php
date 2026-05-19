@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dosen\DataDiriController;
+use App\Http\Controllers\Operator\PegawaiController;
 
 Route::get('/', function () {
     return view('welcome');

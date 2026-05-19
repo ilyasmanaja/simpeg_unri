@@ -11,10 +11,17 @@ class Role extends Model
     public $incrementing = false; // Set false jika id di-input manual
     public $timestamps = false;
     protected $guarded = [];
+    protected $fillable = [
+        'jenis_role'
+    ];
 
     public function users()
-    {
-        // Relasi Many-to-Many ke USER_MANAGE melalui tabel pivot USER_ROLE
-        return $this->belongsToMany(UserManage::class, 'USER_ROLE', 'id_role', 'id_user');
-    }
+{
+    return $this->belongsToMany(
+        UserManage::class,
+        'user_role',
+        'id_role',
+        'id_user'
+    );
+}
 }

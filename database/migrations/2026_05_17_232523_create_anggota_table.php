@@ -11,15 +11,25 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('ANGGOTA', function (Blueprint $table) {
-            $table->integer('id_anggota')->primary();
-            $table->string('jenis_anggota', 255)->nullable();
-            $table->string('nama_anggota', 255)->nullable();
-            $table->string('id_surat_tugas', 10)->nullable();
-            $table->integer('id_pegawai')->nullable();
+    $table->id('id_anggota');
 
-            $table->foreign('id_surat_tugas')->references('id_surat_tugas')->on('SURAT_TUGAS')->onDelete('cascade');
-            $table->foreign('id_pegawai')->references('id_pegawai')->on('PEGAWAI')->onDelete('cascade');
-        });
+    $table->string('jenis_anggota', 255)->nullable();
+    $table->string('nama_anggota', 255)->nullable();
+    $table->string('id_surat_tugas', 10)->nullable();
+
+    // FIX RELASI SAJA (JANGAN foreignId biar tidak ubah struktur)
+    $table->unsignedBigInteger('id_pegawai')->nullable();
+
+    $table->foreign('id_pegawai')
+        ->references('id_pegawai')
+        ->on('PEGAWAI')
+        ->onDelete('cascade');
+
+    $table->foreign('id_surat_tugas')
+        ->references('id_surat_tugas')
+        ->on('SURAT_TUGAS')
+        ->onDelete('cascade');
+});
     }
 
     /**

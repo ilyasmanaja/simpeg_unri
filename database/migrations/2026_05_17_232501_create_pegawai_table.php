@@ -11,28 +11,31 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('PEGAWAI', function (Blueprint $table) {
-            $table->integer('id_pegawai')->primary();
+            $table->id('id_pegawai'); // AUTO INCREMENT BIGINT UNSIGNED
+
             $table->string('nama_lengkap', 255);
-
-            // Ubah menjadi VARCHAR (string) di dalam sini dan set nullable
             $table->string('foto', 255)->nullable();
-
             $table->string('nik', 16)->unique()->nullable();
             $table->date('tanggal_lahir')->nullable();
-            $table->char('jenis_kelamin', 1)->nullable();
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->string('nomor_hp', 20)->nullable();
             $table->string('jurusan', 255)->nullable();
             $table->string('prodi', 255)->nullable();
             $table->string('nomor_hp_darurat', 20)->nullable();
             $table->string('nidn', 10)->nullable();
             $table->string('nip', 18)->unique()->nullable();
-            $table->string('status_pegawai', 50)->nullable();
+            $table->enum('status_pegawai', ['ASN', 'Non ASN']);
 
             $table->string('id_jabfung', 10)->nullable();
             $table->string('id_panggol', 10)->nullable();
 
-            $table->foreign('id_jabfung')->references('id_jabfung')->on('JABATAN_FUNGSIONAL');
-            $table->foreign('id_panggol')->references('id_panggol')->on('PANGKAT_GOLONGAN');
+            $table->foreign('id_jabfung')
+                ->references('id_jabfung')
+                ->on('JABATAN_FUNGSIONAL');
+
+            $table->foreign('id_panggol')
+                ->references('id_panggol')
+                ->on('PANGKAT_GOLONGAN');
         });
     }
 

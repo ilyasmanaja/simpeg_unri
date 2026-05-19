@@ -3,8 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Operator\VerifikasiController;
 use App\Http\Controllers\Operator\BerkasController;
+use App\Http\Controllers\Operator\PegawaiController;
 
 Route::prefix('operator')->name('operator.')->group(function () {
+
+    Route::resource('manajemen_akun', PegawaiController::class);
 
     // ---- Halaman verifikasi ----------------------------------------
     Route::get('/verifikasi',         [VerifikasiController::class, 'suratTugas'])->name('verifikasi.surat-tugas');
@@ -17,7 +20,7 @@ Route::prefix('operator')->name('operator.')->group(function () {
     Route::post('/verifikasi/{id}/tolak',      [VerifikasiController::class, 'tolak'])->name('verifikasi.tolak');
 
     // ---- Berkas -----------------------------------------------------
-    Route::get('/berkas',                        [BerkasController::class, 'index'])->name('berkas.index');
-    Route::get('/berkas/{id_berkas}',            [BerkasController::class, 'show'])->name('berkas.show');
-    Route::get('/berkas/{id_berkas}/download',   [BerkasController::class, 'download'])->name('berkas.download');
+    // Route::get('/berkas',                        [BerkasController::class, 'index'])->name('berkas.index');
+    // Route::get('/berkas/{id_berkas}',            [BerkasController::class, 'show'])->name('berkas.show');
+    // Route::get('/berkas/{id_berkas}/download',   [BerkasController::class, 'download'])->name('berkas.download');
 });

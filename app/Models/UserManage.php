@@ -7,11 +7,24 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class UserManage extends Authenticatable
 {
     protected $table = 'USER_MANAGE';
+
     protected $primaryKey = 'id_user';
-    public $incrementing = false;
+
+    public $incrementing = true; 
+
+    protected $keyType = 'int'; 
+
     public $timestamps = false;
+
     protected $guarded = [];
-    protected $hidden = ['password']; // Sembunyikan password saat data dipanggil
+
+    protected $hidden = ['password'];
+
+    protected $fillable = [
+        'id_pegawai',
+        'email',
+        'password',
+    ];
 
     public function pegawai()
     {
@@ -19,10 +32,14 @@ class UserManage extends Authenticatable
     }
 
     public function roles()
-    {
-        // Relasi Many-to-Many ke ROLE
-        return $this->belongsToMany(Role::class, 'USER_ROLE', 'id_user', 'id_role');
-    }
+{
+    return $this->belongsToMany(
+        Role::class,
+        'user_role',
+        'id_user',
+        'id_role'
+    );
+}
 
     public function hasRole($roleName)
     {

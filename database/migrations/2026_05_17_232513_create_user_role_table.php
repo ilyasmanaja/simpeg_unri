@@ -11,13 +11,16 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('USER_ROLE', function (Blueprint $table) {
-            $table->integer('id_role');
-            $table->integer('id_user');
-            $table->primary(['id_role', 'id_user']);
+    $table->id('id_user_role');
 
-            $table->foreign('id_role')->references('id_role')->on('ROLE')->onDelete('cascade');
-            $table->foreign('id_user')->references('id_user')->on('USER_MANAGE')->onDelete('cascade');
-        });
+    $table->foreignId('id_user')
+        ->constrained('USER_MANAGE', 'id_user')
+        ->onDelete('cascade');
+
+    $table->foreignId('id_role')
+        ->constrained('ROLE', 'id_role')
+        ->onDelete('cascade');
+});
     }
 
     /**

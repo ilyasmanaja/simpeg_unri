@@ -13,6 +13,8 @@ return new class extends Migration {
         Schema::create('JABATAN_FUNGSIONAL', function (Blueprint $table) {
             $table->string('id_jabfung', 10)->primary();
             $table->string('jenis_jabfung', 255);
+            $table->integer('urutan')->nullable(); 
+            $table->string('nama_jabfung', 255);
         });
     }
 
