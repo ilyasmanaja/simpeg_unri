@@ -12,7 +12,9 @@ return new class extends Migration {
     {
         Schema::create('JABATAN_FUNGSIONAL', function (Blueprint $table) {
             $table->string('id_jabfung', 10)->primary();
-            $table->string('jenis_jabfung', 255);
+            $table->string('jenis_jabfung', 255); // nilai: 'dosen' atau 'tendik'
+            $table->string('nama_jabfung', 255);
+            $table->integer('urutan')->nullable(); // urutan jenjang, hanya untuk dosen (1=Asisten Ahli, 2=Lektor, 3=Lektor Kepala, 4=Guru Besar), tendik = null
         });
     }
 
@@ -21,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('jabatan_fungsional');
+        Schema::dropIfExists('JABATAN_FUNGSIONAL');
     }
 };
