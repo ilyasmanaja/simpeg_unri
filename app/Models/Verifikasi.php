@@ -14,12 +14,14 @@ class Verifikasi extends Model
 
     protected $fillable = [
         'id_verifikasi', 'status_verifikasi', 'jenis_verifikasi',
-        'tanggal_pengajuan', 'tanggal_proses', 'keterangan', 'id_berkas',
+        'tanggal_pengajuan', 'tanggal_proses', 'keterangan',
+        'berkas_bermasalah', 'id_berkas',
     ];
 
     protected $casts = [
         'tanggal_pengajuan' => 'date',
         'tanggal_proses'    => 'date',
+        'berkas_bermasalah' => 'array',   // ← tambahan
     ];
 
     // Konstanta jenis_verifikasi
@@ -30,15 +32,17 @@ class Verifikasi extends Model
     // Konstanta status_verifikasi
     const STATUS_DITERUSKAN    = 'Diteruskan';
     const STATUS_DITOLAK       = 'Ditolak';
-    const STATUS_TERVERIFIKASI = 'Terverifikasi'; 
+    const STATUS_TERVERIFIKASI = 'Terverifikasi';
 
-    // ── Relasi 
+    // ── Relasi ──────────────────────────────────────────────
+
     public function berkas()
     {
         return $this->belongsTo(Berkas::class, 'id_berkas', 'id_berkas');
     }
 
-    // ── Helper: generate PK unik 
+    // ── Helper: generate PK unik ────────────────────────────
+
     public static function generateId(string $jenis): string
     {
         $prefix = match ($jenis) {

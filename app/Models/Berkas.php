@@ -8,8 +8,8 @@ class Berkas extends Model
 {
     protected $table      = 'BERKAS';
     protected $primaryKey = 'id_berkas';
-    public    $incrementing = false;
-    protected $keyType    = 'string';
+    public    $incrementing = true;
+    protected $keyType    = 'int';
     public    $timestamps = false;
     protected $guarded    = [];
 
