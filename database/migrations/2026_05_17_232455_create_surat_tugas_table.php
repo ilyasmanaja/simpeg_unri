@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('SURAT_TUGAS', function (Blueprint $table) {
-            $table->string('id_surat_tugas', 10)->primary();
+            $table->id('id_surat_tugas');
             $table->date('waktu_pelaksanaan')->nullable();
             $table->date('lama_pelaksanaan')->nullable();
             $table->string('perihal', 255)->nullable();

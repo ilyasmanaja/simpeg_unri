@@ -11,8 +11,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('PENGAJUAN_KENAIKAN', function (Blueprint $table) {
-            $table->integer('id_pengajuan')->primary();
-            $table->integer('id_pegawai');
+            $table->id('id_pengajuan');
+            $table->foreignId('id_pegawai');
             $table->string('jenis_pengajuan', 20);
             $table->string('target_panggol', 10)->nullable();
             $table->string('target_jabfung', 10)->nullable();

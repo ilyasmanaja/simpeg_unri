@@ -11,10 +11,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('USER_MANAGE', function (Blueprint $table) {
-            $table->integer('id_user')->primary();
+            $table->id('id_user');
             $table->string('email', 255)->unique();
             $table->string('password', 255);
-            $table->integer('id_pegawai')->nullable();
+            $table->foreignId('id_pegawai')->nullable();
 
             $table->foreign('id_pegawai')->references('id_pegawai')->on('PEGAWAI')->onDelete('cascade');
         });

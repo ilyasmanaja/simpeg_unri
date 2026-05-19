@@ -11,14 +11,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('VERIFIKASI', function (Blueprint $table) {
-            $table->string('id_verifikasi', 50)->primary();
+            $table->id('id_verifikasi');
             $table->string('status_verifikasi', 50)->nullable();
             $table->string('jenis_verifikasi', 50)->nullable();
             $table->date('tanggal_pengajuan')->nullable();
             $table->date('tanggal_proses')->nullable();
             $table->string('keterangan', 255)->nullable();
             $table->json('berkas_bermasalah')->nullable(); // tambah ini
-            $table->string('id_berkas', 30)->nullable();
+            $table->foreignId('id_berkas');
 
             $table->foreign('id_berkas')->references('id_berkas')->on('BERKAS')->onDelete('cascade');
         });

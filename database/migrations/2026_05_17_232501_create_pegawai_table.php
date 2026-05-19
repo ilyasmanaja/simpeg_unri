@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('PEGAWAI', function (Blueprint $table) {
-            $table->integer('id_pegawai')->primary();
+            $table->id('id_pegawai');
             $table->string('nama_lengkap', 255);
 
             // Ubah menjadi VARCHAR (string) di dalam sini dan set nullable
@@ -28,8 +28,8 @@ return new class extends Migration {
             $table->string('nip', 18)->unique()->nullable();
             $table->string('status_pegawai', 50)->nullable();
 
-            $table->string('id_jabfung', 10)->nullable();
-            $table->string('id_panggol', 10)->nullable();
+            $table->foreignId('id_jabfung', 10)->nullable();
+            $table->foreignId('id_panggol', 10)->nullable();
 
             $table->foreign('id_jabfung')->references('id_jabfung')->on('JABATAN_FUNGSIONAL');
             $table->foreign('id_panggol')->references('id_panggol')->on('PANGKAT_GOLONGAN');

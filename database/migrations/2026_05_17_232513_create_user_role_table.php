@@ -11,8 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('USER_ROLE', function (Blueprint $table) {
-            $table->integer('id_role');
-            $table->integer('id_user');
+            // 1. Ubah menjadi foreignId karena merujuk ke tabel yang pakai id()
+            $table->foreignId('id_role');
+            $table->foreignId('id_user');
+
+            // Composite Primary Key tetap dipertahankan
             $table->primary(['id_role', 'id_user']);
 
             $table->foreign('id_role')->references('id_role')->on('ROLE')->onDelete('cascade');

@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('JABATAN_FUNGSIONAL', function (Blueprint $table) {
-            $table->string('id_jabfung', 10)->primary();
+            $table->id('id_jabfung');
             $table->string('jenis_jabfung', 255);
         });
     }
