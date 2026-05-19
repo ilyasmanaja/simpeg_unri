@@ -10,3 +10,5 @@ Route::get('/', function () {
 Route::prefix('dosen')->group(function () {
     Route::get('/data-diri', [DataDiriController::class, 'index']);
 });
+
+require __DIR__.'/operator.php';
