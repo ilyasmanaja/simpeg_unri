@@ -8,7 +8,7 @@ class Pegawai extends Model
 {
     protected $table = 'pegawai';
     protected $primaryKey = 'id_pegawai';
-    public $incrementing = false;
+    public $incrementing = true;
     public $timestamps = false;
     protected $guarded = [];
 

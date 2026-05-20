@@ -66,8 +66,8 @@
                             <h5 class="fw-bold m-0" style="color: var(--unri-red);">Informasi Personal</h5>
                             <div class="d-flex gap-2">
                                 <!-- Link Update Dinamis -->
-                                <a href="{{ url('/dosen/data-diri/edit') }}" class="btn btn-outline-danger btn-sm"
-                                    style="color: var(--unri-red);">
+                                <a href="{{ route('dosen.pegawai.edit', $pegawai->id_pegawai) }}"
+                                    class="btn btn-outline-danger btn-sm" style="color: var(--unri-red);">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
                                 <!-- Tombol Tambah (nanti kita buat logikanya disembunyikan jika data sudah lengkap) -->

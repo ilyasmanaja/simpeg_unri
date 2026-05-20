@@ -9,9 +9,17 @@ use App\Http\Controllers\PegawaiController;
 // URL Otomatis: /dosen/data-diri
 // Nama Rute Otomatis: dosen.datadiri.index
 Route::prefix('data-diri')->group(function () {
+    // 1. Menampilkan halaman utama (memanggil index.blade.php)
     Route::get('/', [DataDiriController::class, 'index'])->name('datadiri.index');
-    Route::get('/{id}', [PegawaiController::class, 'detail'])->name('pegawai.detail');
+    
+    // 2. Menampilkan form tambah data (memanggil create.blade.php)
+    Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+    // Memproses data yang ditambahkan
+    Route::post('/', [PegawaiController::class, 'store'])->name('pegawai.store'); 
+    
+    // 3. Menampilkan form edit (memanggil update.blade.php)
     Route::get('/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+    // Memproses data yang diupdate
     Route::put('/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
 });
 
