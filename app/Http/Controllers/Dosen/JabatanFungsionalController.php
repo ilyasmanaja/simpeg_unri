@@ -57,35 +57,35 @@ class JabatanFungsionalController extends Controller
 
     private function buildJabfungData(Pegawai $pegawai, string $jenis): array
     {
-        $jabfungNow     = $pegawai->jabatanFungsional;
+        $jabfungNow = $pegawai->jabatanFungsional;
         $namaJabfungNow = $jabfungNow?->jenis_jabfung;
 
         if ($jenis === 'dosen') {
-            $urutanNow    = $this->getUrutanDosen($namaJabfungNow);
+            $urutanNow = $this->getUrutanDosen($namaJabfungNow);
             $urutanTarget = max(1, $urutanNow + 1);
-            $maxUrutan    = count(self::JABFUNG_DOSEN);
-            $sudahPuncak  = $urutanNow >= $maxUrutan;
-            $namaTarget   = self::JABFUNG_DOSEN[$urutanTarget] ?? null;
+            $maxUrutan = count(self::JABFUNG_DOSEN);
+            $sudahPuncak = $urutanNow >= $maxUrutan;
+            $namaTarget = self::JABFUNG_DOSEN[$urutanTarget] ?? null;
 
             return [
                 'namaJabfungNow' => $namaJabfungNow,
-                'urutanNow'      => $urutanNow,
-                'urutanTarget'   => $urutanTarget,
-                'sudahPuncak'    => $sudahPuncak,
-                'namaTarget'     => $namaTarget,
-                'semuaJabfung'   => self::JABFUNG_DOSEN,   // [urutan => nama]
-                'listTendik'     => [],
+                'urutanNow' => $urutanNow,
+                'urutanTarget' => $urutanTarget,
+                'sudahPuncak' => $sudahPuncak,
+                'namaTarget' => $namaTarget,
+                'semuaJabfung' => self::JABFUNG_DOSEN,   // [urutan => nama]
+                'listTendik' => [],
             ];
         }
 
         return [
             'namaJabfungNow' => $namaJabfungNow,
-            'urutanNow'      => 0,
-            'urutanTarget'   => 0,
-            'sudahPuncak'    => false,
-            'namaTarget'     => null,
-            'semuaJabfung'   => [],
-            'listTendik'     => self::JABFUNG_TENDIK,
+            'urutanNow' => 0,
+            'urutanTarget' => 0,
+            'sudahPuncak' => false,
+            'namaTarget' => null,
+            'semuaJabfung' => [],
+            'listTendik' => self::JABFUNG_TENDIK,
         ];
     }
 
@@ -106,7 +106,9 @@ class JabatanFungsionalController extends Controller
         $namaJabfungNow = $pegawai->jabatanFungsional?->jenis_jabfung;
 
         return view('dosen.jabatanfungsional.readjabatanfungsional', compact(
-            'pegawai', 'pengajuan', 'namaJabfungNow'
+            'pegawai',
+            'pengajuan',
+            'namaJabfungNow'
         ));
     }
 
@@ -117,11 +119,12 @@ class JabatanFungsionalController extends Controller
     public function create()
     {
         $pegawai = $this->getPegawai();
-        $jenis   = $this->getJenis($pegawai);
+        $jenis = $this->getJenis($pegawai);
 
-        if ($pegawai->status_pegawai !== 'ASN') {
+        // Perbaikan logika: Gunakan in_array atau pengecekan yang benar
+        if (!in_array($pegawai->status_pegawai, ['ASN', 'PNS'])) {
             return redirect()->route('dosen.jabatanfungsional.index')
-                ->with('error', 'Fitur ini hanya untuk pegawai berstatus ASN.');
+                ->with('error', 'Fitur ini hanya untuk pegawai berstatus ASN / PNS.');
         }
 
         $data = $this->buildJabfungData($pegawai, $jenis);
@@ -144,16 +147,16 @@ class JabatanFungsionalController extends Controller
     public function store(Request $request)
     {
         $pegawai = $this->getPegawai();
-        $jenis   = $this->getJenis($pegawai);
-        $data    = $this->buildJabfungData($pegawai, $jenis);
+        $jenis = $this->getJenis($pegawai);
+        $data = $this->buildJabfungData($pegawai, $jenis);
 
         $request->validate([
             'nama_jabfung_target' => 'required|string',
-            'nomor_usulan'        => 'required|string|max:100',
-            'sk_cpns'             => 'required|file|mimes:pdf|max:5120',
-            'sk_pns'              => 'required|file|mimes:pdf|max:5120',
-            'pak'                 => 'required|file|mimes:pdf|max:5120',
-            'publikasi'           => 'nullable|file|mimes:pdf|max:10240',
+            'nomor_usulan' => 'required|string|max:100',
+            'sk_cpns' => 'required|file|mimes:pdf|max:5120',
+            'sk_pns' => 'required|file|mimes:pdf|max:5120',
+            'pak' => 'required|file|mimes:pdf|max:5120',
+            'publikasi' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         $namaTarget = $request->nama_jabfung_target;
@@ -175,15 +178,15 @@ class JabatanFungsionalController extends Controller
 
         DB::beginTransaction();
         try {
-            $lastId    = DB::table('PENGAJUAN_KENAIKAN')->max('id_pengajuan') ?? 0;
+            $lastId = DB::table('PENGAJUAN_KENAIKAN')->max('id_pengajuan') ?? 0;
             $pengajuan = PengajuanKenaikan::create([
-                'id_pengajuan'        => $lastId + 1,
-                'id_pegawai'          => $pegawai->id_pegawai,
-                'jenis_pengajuan'     => 'jabfung',
-                'target_jabfung'      => $pegawai->id_jabfung,
+                'id_pengajuan' => $lastId + 1,
+                'id_pegawai' => $pegawai->id_pegawai,
+                'jenis_pengajuan' => 'jabfung',
+                'target_jabfung' => $pegawai->id_jabfung,
                 'keterangan_tambahan' => $namaTarget,
-                'nomor_usulan'        => $request->nomor_usulan,
-                'status_pengajuan'    => 'menunggu',
+                'nomor_usulan' => $request->nomor_usulan,
+                'status_pengajuan' => 'menunggu',
             ]);
 
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai);
@@ -203,8 +206,8 @@ class JabatanFungsionalController extends Controller
 
     public function edit($id)
     {
-        $pegawai   = $this->getPegawai();
-        $jenis     = $this->getJenis($pegawai);
+        $pegawai = $this->getPegawai();
+        $jenis = $this->getJenis($pegawai);
         $pengajuan = PengajuanKenaikan::with(['berkas', 'verifikasi'])
             ->where('id_pegawai', $pegawai->id_pegawai)
             ->where('jenis_pengajuan', 'jabfung')
@@ -215,7 +218,7 @@ class JabatanFungsionalController extends Controller
                 ->with('error', 'Hanya pengajuan berstatus Menunggu yang dapat diedit.');
         }
 
-        $data      = $this->buildJabfungData($pegawai, $jenis);
+        $data = $this->buildJabfungData($pegawai, $jenis);
         $berkasAda = $pengajuan->berkas->keyBy('jenis_berkas');
 
         return view('dosen.jabatanfungsional.formjabatanfungsional', array_merge(
@@ -230,8 +233,8 @@ class JabatanFungsionalController extends Controller
 
     public function update(Request $request, $id)
     {
-        $pegawai   = $this->getPegawai();
-        $jenis     = $this->getJenis($pegawai);
+        $pegawai = $this->getPegawai();
+        $jenis = $this->getJenis($pegawai);
         $pengajuan = PengajuanKenaikan::where('id_pegawai', $pegawai->id_pegawai)
             ->where('jenis_pengajuan', 'jabfung')
             ->findOrFail($id);
@@ -242,15 +245,15 @@ class JabatanFungsionalController extends Controller
         }
 
         $berkasAda = $pengajuan->berkas->keyBy('jenis_berkas');
-        $data      = $this->buildJabfungData($pegawai, $jenis);
+        $data = $this->buildJabfungData($pegawai, $jenis);
 
         $rules = [
             'nama_jabfung_target' => 'required|string',
-            'nomor_usulan'        => 'required|string|max:100',
-            'sk_cpns'             => ($berkasAda->has('sk_cpns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'sk_pns'              => ($berkasAda->has('sk_pns')  ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'pak'                 => ($berkasAda->has('pak')     ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'publikasi'           => 'nullable|file|mimes:pdf|max:10240',
+            'nomor_usulan' => 'required|string|max:100',
+            'sk_cpns' => ($berkasAda->has('sk_cpns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'sk_pns' => ($berkasAda->has('sk_pns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'pak' => ($berkasAda->has('pak') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'publikasi' => 'nullable|file|mimes:pdf|max:10240',
         ];
         $request->validate($rules);
 
@@ -264,8 +267,8 @@ class JabatanFungsionalController extends Controller
         try {
             $pengajuan->update([
                 'keterangan_tambahan' => $namaTarget,
-                'nomor_usulan'        => $request->nomor_usulan,
-                'status_pengajuan'    => 'menunggu',
+                'nomor_usulan' => $request->nomor_usulan,
+                'status_pengajuan' => 'menunggu',
             ]);
 
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai, $berkasAda);
@@ -285,8 +288,8 @@ class JabatanFungsionalController extends Controller
 
     public function revisi($id)
     {
-        $pegawai   = $this->getPegawai();
-        $jenis     = $this->getJenis($pegawai);
+        $pegawai = $this->getPegawai();
+        $jenis = $this->getJenis($pegawai);
         $pengajuan = PengajuanKenaikan::with(['berkas', 'verifikasi'])
             ->where('id_pegawai', $pegawai->id_pegawai)
             ->where('jenis_pengajuan', 'jabfung')
@@ -297,8 +300,8 @@ class JabatanFungsionalController extends Controller
                 ->with('error', 'Hanya pengajuan yang ditolak yang dapat direvisi.');
         }
 
-        $data             = $this->buildJabfungData($pegawai, $jenis);
-        $berkasAda        = $pengajuan->berkas->keyBy('jenis_berkas');
+        $data = $this->buildJabfungData($pegawai, $jenis);
+        $berkasAda = $pengajuan->berkas->keyBy('jenis_berkas');
         $berkasBermasalah = $pengajuan->berkas_bermasalah;
 
         return view('dosen.jabatanfungsional.formjabatanfungsional', array_merge(
@@ -313,7 +316,7 @@ class JabatanFungsionalController extends Controller
 
     public function simpanRevisi(Request $request, $id)
     {
-        $pegawai   = $this->getPegawai();
+        $pegawai = $this->getPegawai();
         $pengajuan = PengajuanKenaikan::with(['berkas', 'verifikasi'])
             ->where('id_pegawai', $pegawai->id_pegawai)
             ->where('jenis_pengajuan', 'jabfung')
@@ -364,7 +367,7 @@ class JabatanFungsionalController extends Controller
 
     public function destroy($id)
     {
-        $pegawai   = $this->getPegawai();
+        $pegawai = $this->getPegawai();
         $pengajuan = PengajuanKenaikan::where('id_pegawai', $pegawai->id_pegawai)
             ->where('jenis_pengajuan', 'jabfung')
             ->findOrFail($id);
@@ -402,22 +405,24 @@ class JabatanFungsionalController extends Controller
         PengajuanKenaikan $pengajuan,
         $idPegawai,
         $berkasAda = null,
-        $onlyKeys  = null
+        $onlyKeys = null
     ): void {
         $berkasConfig = [
-            'sk_cpns'   => ['label' => 'SK CPNS',  'max' => 5],
-            'sk_pns'    => ['label' => 'SK PNS',   'max' => 5],
-            'pak'       => ['label' => 'PAK',       'max' => 5],
+            'sk_cpns' => ['label' => 'SK CPNS', 'max' => 5],
+            'sk_pns' => ['label' => 'SK PNS', 'max' => 5],
+            'pak' => ['label' => 'PAK', 'max' => 5],
             'publikasi' => ['label' => 'Publikasi', 'max' => 10],
         ];
 
         foreach ($berkasConfig as $key => $cfg) {
-            if ($onlyKeys !== null && !in_array($key, (array) $onlyKeys)) continue;
-            if (!$request->hasFile($key)) continue;
+            if ($onlyKeys !== null && !in_array($key, (array) $onlyKeys))
+                continue;
+            if (!$request->hasFile($key))
+                continue;
 
-            $file     = $request->file($key);
+            $file = $request->file($key);
             $namaFile = $key . '_' . $idPegawai . '_' . time() . '.pdf';
-            $path     = $file->storeAs("berkas_jabfung/{$pengajuan->id_pengajuan}", $namaFile, 'public');
+            $path = $file->storeAs("berkas_jabfung/{$pengajuan->id_pengajuan}", $namaFile, 'public');
 
             if ($berkasAda && $berkasAda->has($key)) {
                 $lama = $berkasAda->get($key);
@@ -425,17 +430,17 @@ class JabatanFungsionalController extends Controller
                     Storage::disk('public')->delete($lama->file_path);
                 }
                 $lama->update([
-                    'nama_berkas'  => $cfg['label'],
+                    'nama_berkas' => $cfg['label'],
                     'jenis_berkas' => $key,
-                    'file_path'    => $path,
+                    'file_path' => $path,
                 ]);
             } else {
                 // id_berkas auto increment — tidak perlu di-set manual
                 Berkas::create([
-                    'nama_berkas'  => $cfg['label'],
+                    'nama_berkas' => $cfg['label'],
                     'jenis_berkas' => $key,
-                    'file_path'    => $path,
-                    'id_pegawai'   => $idPegawai,
+                    'file_path' => $path,
+                    'id_pegawai' => $idPegawai,
                     'id_pengajuan' => $pengajuan->id_pengajuan,
                 ]);
             }
