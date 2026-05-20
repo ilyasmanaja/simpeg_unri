@@ -25,10 +25,10 @@ Route::get('/', function () {
 // ==========================================
 // Kita tambahkan ->middleware('auth') agar rute di dalam dosen.php aman dari penyusup
 Route::prefix('dosen')->name('dosen.')->middleware('auth')->group(function () {
-    
+
     // Semua rute di dalam file ini otomatis diawali: /dosen/
-    require __DIR__.'/dosen.php';
-    
+    require __DIR__ . '/dosen.php';
+
 });
 
 
@@ -36,8 +36,16 @@ Route::prefix('dosen')->name('dosen.')->middleware('auth')->group(function () {
 // GROUP UTAMA: OPERATOR (TERKUNCI / PROTECTED)
 // ==========================================
 Route::prefix('operator')->name('operator.')->middleware('auth')->group(function () {
-    
+
     // Semua rute di dalam file ini otomatis diawali: /operator/
-    require __DIR__.'/operator.php';
-    
+    require __DIR__ . '/operator.php';
+
+});
+
+// ==========================================
+// GROUP UTAMA: PIMPINAN (TERKUNCI / PROTECTED)
+// ==========================================
+Route::prefix('pimpinan')->name('pimpinan.')->middleware('auth')->group(function () {
+    // Semua rute di dalam file pimpinan.php otomatis diawali: /pimpinan/ dan nama rute pimpinan.
+    require __DIR__ . '/pimpinan.php';
 });

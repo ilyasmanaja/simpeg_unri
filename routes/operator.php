@@ -3,8 +3,23 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Operator\VerifikasiController;
 use App\Http\Controllers\Operator\BerkasController;
+use App\Http\Controllers\Operator\DataDiriController; 
+use App\Http\Controllers\Operator\PegawaiController;
 
 // TIDAK PERLU Route::prefix('operator') lagi karena sudah diwakili oleh web.php
+
+Route::prefix('data-diri')->group(function () {
+    // Halaman Index Operator
+    Route::get('/', [PegawaiController::class, 'index'])->name('datadiri.index');
+
+    // Halaman Tambah & Proses Simpan Operator
+    Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
+    Route::post('/', [PegawaiController::class, 'store'])->name('pegawai.store');
+
+    // Halaman Edit & Proses Update Operator
+    Route::get('/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+    Route::put('/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
+});
 
 // ---- Halaman verifikasi ----------------------------------------
 Route::get('/verifikasi/surat-tugas', [VerifikasiController::class, 'suratTugas'])->name('verifikasi.surat-tugas');

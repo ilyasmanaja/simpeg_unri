@@ -29,7 +29,7 @@ class AuthController extends Controller
             $role = strtolower($user->jenis_role); // Menggunakan accessor yang sudah kamu buat
 
             if ($role === 'operator') {
-                return redirect()->intended('/operator/dashboard');
+                return redirect()->intended('/operator/data-diri');
             } elseif ($role === 'pimpinan') {
                 return redirect()->intended('/pimpinan/dashboard');
             }

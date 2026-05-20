@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Dosen\DataDiriController;
 use App\Http\Controllers\Dosen\JabatanFungsionalController;
 use App\Http\Controllers\Dosen\PangkatController;
 use App\Http\Controllers\PegawaiController; 
@@ -10,7 +9,7 @@ use App\Http\Controllers\PegawaiController;
 // Nama Rute Otomatis: dosen.datadiri.index
 Route::prefix('data-diri')->group(function () {
     // 1. Menampilkan halaman utama (memanggil index.blade.php)
-    Route::get('/', [DataDiriController::class, 'index'])->name('datadiri.index');
+    Route::get('/', [PegawaiController::class, 'index'])->name('datadiri.index');
     
     // 2. Menampilkan form tambah data (memanggil create.blade.php)
     Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');

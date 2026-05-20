@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Pimpinan;
 
+use App\Http\Controllers\Controller;
 use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class PegawaiController extends Controller
 {
-
     public function index()
     {
         // Ambil data user yang sedang login
@@ -19,7 +19,7 @@ class PegawaiController extends Controller
         $pegawai = $user->pegawai ?? new Pegawai();
 
         // Mengarahkan ke file view index milik operator
-        return view('dosen.data-diri.index', compact('pegawai'));
+        return view('pimpinan.index', compact('pegawai'));
     }
     public function create()
     {
@@ -30,7 +30,7 @@ class PegawaiController extends Controller
         // Jika belum ada relasi (belum isi data), buat objek Pegawai kosong agar tidak error di HTML
         $pegawai = $user->pegawai ?? new \App\Models\Pegawai();
 
-        return view('dosen.data-diri.create', compact('pegawai'));
+        return view('pimpinan.create', compact('pegawai'));
     }
 
     public function store(Request $request)
@@ -63,7 +63,7 @@ class PegawaiController extends Controller
             $user->save();
         }
 
-        return redirect()->route('dosen.datadiri.index')->with('success', 'Data berhasil ditambahkan.');
+        return redirect()->route('pimpinan.datadiri.index')->with('success', 'Data berhasil ditambahkan.');
     }
 
     public function edit(int $id)
@@ -71,7 +71,7 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::findOrFail($id);
 
         // Sudah benar: diarahkan ke update.blade.php sesuai struktur folder kamu
-        return view('dosen.data-diri.update', compact('pegawai'));
+        return view('pimpinan.update', compact('pegawai'));
     }
 
     public function update(Request $request, int $id)
@@ -88,20 +88,12 @@ class PegawaiController extends Controller
         // Tambahkan 'tanggal_lahir' ke dalam daftar data yang diupdate
         $pegawai->update($request->only(['tanggal_lahir', 'nomor_hp', 'nomor_hp_darurat']));
 
-        return redirect()->route('dosen.datadiri.index')->with('success', 'Data berhasil diperbarui.');
+        return redirect()->route('pimpinan.datadiri.index')->with('success', 'Data berhasil diperbarui.');
     }
-
-    // Fungsi show dihapus/dikomentari karena file detail.blade.php tidak ada di folder kamu
-    // public function show(int $id) 
-    // {
-    //     $pegawai = Pegawai::findOrFail($id);
-    //     return view('dosen.data-diri.detail', compact('pegawai'));
-    // }
-
     public function passwordForm(int $id)
     {
         $pegawai = Pegawai::findOrFail($id);
-        return view('dosen.password', compact('pegawai'));
+        return view('pimpinan.password', compact('pegawai'));
     }
 
     public function passwordUpdate(Request $request, int $id)
