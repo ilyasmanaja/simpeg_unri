@@ -6,6 +6,8 @@
     <!-- Pastikan file style.css kamu sudah ada di folder public/assets/dosen/data_diri/ -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/dosen/data_diri/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 @endpush
 
 @section('content')
@@ -19,7 +21,7 @@
 
             <!-- NAMA DINAMIS -->
             <h4 class="tebal">
-                <img src="{{ $pegawai->foto ? asset ($pegawai->foto) : asset('assets/dosen/data_diri/pfp.jpg') }}"
+                <img src="{{ $pegawai->foto ? asset($pegawai->foto) : asset('assets/dosen/data_diri/pfp.jpg') }}"
                     alt="Profile"
                     style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;">
                 Selamat Datang, {{ $pegawai->nama_lengkap }} di Sistem Informasi Kepegawaian
@@ -92,8 +94,9 @@
                             <div class="data-label">No. HP Darurat</div>
                             <div class="data-value">
                                 {{ $pegawai->nomor_hp_darurat ?? 'Belum ada data' }}
-                                @if($pegawai->nomor_hp_darurat)
-                                    <span class="badge bg-secondary ms-2 opacity-75" style="font-size: 0.7rem;">Darurat</span>
+                                @if ($pegawai->nomor_hp_darurat)
+                                    <span class="badge bg-secondary ms-2 opacity-75"
+                                        style="font-size: 0.7rem;">Darurat</span>
                                 @endif
                             </div>
                         </div>

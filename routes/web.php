@@ -1,28 +1,43 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
-// Halaman utama / Welcome
-Route::get('/', function () {
-    return view('welcome');
+// ==========================================
+// MODULE: AUTHENTICATION (PUBLIC)
+// ==========================================
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
+// Rute Logout (Hanya bisa diakses jika sudah login)
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Halaman Utama: Jika belum login otomatis dilempar ke login
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+
 // ==========================================
-// GROUP UTAMA: DOSEN
+// GROUP UTAMA: DOSEN & TENDIK (TERKUNCI / PROTECTED)
 // ==========================================
-Route::prefix('dosen')->name('dosen.')->group(function () {
+// Kita tambahkan ->middleware('auth') agar rute di dalam dosen.php aman dari penyusup
+Route::prefix('dosen')->name('dosen.')->middleware('auth')->group(function () {
     
-    // Semua route di dalam file ini otomatis diawali: /dosen/
+    // Semua rute di dalam file ini otomatis diawali: /dosen/
     require __DIR__.'/dosen.php';
     
 });
 
+
 // ==========================================
-// GROUP UTAMA: OPERATOR
+// GROUP UTAMA: OPERATOR (TERKUNCI / PROTECTED)
 // ==========================================
-Route::prefix('operator')->name('operator.')->group(function () {
+Route::prefix('operator')->name('operator.')->middleware('auth')->group(function () {
     
-    // Semua route di dalam file ini otomatis diawali: /operator/
-    // require __DIR__.'/operator.php';
+    // Semua rute di dalam file ini otomatis diawali: /operator/
+    require __DIR__.'/operator.php';
     
 });

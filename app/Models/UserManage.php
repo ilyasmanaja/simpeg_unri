@@ -51,4 +51,9 @@ class UserManage extends Authenticatable
     {
         return $this->roles->first()?->jenis_role;
     }
+
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('jenis_role', $roleName)->exists();
+    }
 }
