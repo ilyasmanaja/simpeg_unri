@@ -93,10 +93,10 @@
                             @forelse ($row->berkas as $b)
                                 <a href="{{ Storage::url($b->file_path) }}"
                                    target="_blank"
-                                   class="file-chip d-flex {{ in_array($b->jenis_berkas, $bermasalahArr) ? 'file-chip-bermasalah' : '' }}">
+                                   class="file-chip d-flex {{ in_array($b->jenis_berkas, $bermasalahArr ?? []) ? 'file-chip-bermasalah' : '' }}">
                                     <i class="bi bi-file-earmark-pdf-fill flex-shrink-0"></i>
                                     <span>{{ $labelBerkas[$b->jenis_berkas] ?? $b->jenis_berkas }}</span>
-                                    @if (in_array($b->jenis_berkas, $bermasalahArr))
+                                    @if (in_array($b->jenis_berkas, $bermasalahArr ?? []))
                                         <i class="bi bi-exclamation-circle-fill ms-1 text-danger" title="Perlu direvisi"></i>
                                     @endif
                                 </a>
@@ -125,10 +125,7 @@
                                        class="btn btn-primary btn-aksi">
                                         <i class="bi bi-pencil me-1"></i>Perbarui
                                     </a>
-                                    <button class="btn btn-danger btn-aksi"
-                                            onclick="confirmDelete({{ $row->id_pengajuan }}, '{{ csrf_token() }}')">
-                                        <i class="bi bi-trash me-1"></i>Hapus
-                                    </button>
+                                    <a href="{{ route('dosen.jabatanfungsional.destroy', $row->id_pengajuan) }}" class="btn btn-hapus btn-delete">Hapus</a>
                                     <button onclick="bukaDetail({{ $row->id_pengajuan }})"
                                             class="btn btn-secondary btn-aksi">
                                         <i class="bi bi-eye me-1"></i>Detail

@@ -64,7 +64,8 @@
                             </button>
                         </div>
                     </form>
-                    <div class="info-text mb-3">Menampilkan {{ $antrian->count() }} dari {{ $antrian->total() }} data</div>
+                    <div class="info-text mb-3">Menampilkan {{ $antrian->count() }} dari {{ $antrian->total() }} data
+                    </div>
 
                     @if ($antrian->isEmpty())
                         <div class="antrean-kosong">
@@ -145,21 +146,17 @@
                                                         class="detail-label">Perihal</span><span
                                                         class="detail-val highlight">{{ $st?->perihal ?? '-' }}</span>
                                                 </div>
-                                                <div class="detail-field full"><span class="detail-label">Tujuan</span><span
-                                                        class="detail-val">{{ $st?->tujuan ?? '-' }}</span></div>
                                                 <div class="detail-field"><span class="detail-label">Waktu
                                                         Pelaksanaan</span><span
-                                                        class="detail-val">{{ $st?->waktu ?? '-' }}</span></div>
-                                                <div class="detail-field"><span class="detail-label">Nomor
-                                                        Surat</span><span
-                                                        class="detail-val">{{ $st?->nomor_surat ?? '-' }}</span></div>
+                                                        class="detail-val">{{ $st?->waktu_pelaksanaan ? \Carbon\Carbon::parse($st->waktu_pelaksanaan)->translatedFormat('d M Y') : '-' }}</span>
+                                                </div>
                                             </div>
                                             @if ($st && $st->anggota && $st->anggota->count())
                                                 <div class="panel-section-title">Daftar Anggota</div>
                                                 <div style="padding:4px 0 12px;display:flex;flex-wrap:wrap;gap:6px;">
                                                     @foreach ($st->anggota as $anggota)
                                                         <span
-                                                            class="chip-jabatan">{{ $anggota->pegawai?->nama_lengkap ?? '-' }}</span>
+                                                            class="chip-jabatan">{{ $anggota->nama_anggota ?? '-' }}</span>
                                                     @endforeach
                                                 </div>
                                             @endif

@@ -8,11 +8,10 @@ return new class extends Migration {
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('JABATAN_FUNGSIONAL', function (Blueprint $table) {
-            $table->id('id_jabfung');
-            $table->string('jenis_jabfung', 255); // nilai: 'dosen' atau 'tendik'
+        Schema::table('surat_tugas', function (Blueprint $table) {
+            $table->boolean('berkas_bermasalah')->default(false);
         });
     }
 
@@ -21,6 +20,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('JABATAN_FUNGSIONAL');
+        Schema::table('surat_tugas', function (Blueprint $table) {
+            //
+        });
     }
 };

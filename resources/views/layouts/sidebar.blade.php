@@ -51,7 +51,8 @@
                 class="{{ request()->is('pimpinan/dashboard*') ? 'active' : '' }}">
                 <i class="fa-solid fa-house me-2"></i> Dashboard
             </a>
-            <a href="{{ url('/pimpinan/data-diri') }}" class="{{ request()->is('pimpinan/data-diri*') ? 'active' : '' }}"><i
+            <a href="{{ url('/pimpinan/data-diri') }}"
+                class="{{ request()->is('pimpinan/data-diri*') ? 'active' : '' }}"><i
                     class="bi bi-person-badge me-2"></i> Data Diri</a>
 
             <div class="menu-group">
@@ -81,8 +82,10 @@
                 Dosen</div>
             <a href="{{ url('/dosen/data-diri') }}" class="{{ request()->is('dosen/data-diri*') ? 'active' : '' }}"><i
                     class="bi bi-person-badge me-2"></i> Data Diri</a>
-            <a href="{{ url('/dosen/surat-tugas') }}"><i class="bi bi-envelope-paper-fill me-2"></i> Pengajuan Surat
-                Tugas</a>
+            <a href="{{ route('dosen.surat.index') }}"
+                class="{{ request()->routeIs('dosen.surat.index') ? 'active' : '' }}">
+                <i class="bi bi-envelope-paper-fill me-2"></i>Pengajuan Surat Tugas
+            </a>
             <a href="{{ url('/dosen/pangkat-golongan') }}"
                 class="{{ request()->is('dosen/pangkat-golongan*') ? 'active' : '' }}"><i class="bi bi-award me-2"></i>
                 Data Pangkat Golongan</a>
