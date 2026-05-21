@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Edit Akun Pegawai')
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/manajemen_akun/style.css') }}">
+@endpush
 
 @section('content')
 

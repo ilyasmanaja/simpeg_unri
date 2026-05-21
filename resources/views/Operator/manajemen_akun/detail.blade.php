@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Detail Akun Pegawai')
-
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/manajemen_akun/style.css') }}">
+@endpush
 @section('content')
 
     <div class="container-fluid p-4">
