@@ -3,12 +3,9 @@
         <h4>Sistem Informasi Kepegawaian</h4>
 
         @php
-            // Lebih aman menggunakan null-safe operator (?->) untuk mencegah error jika user null
             $user = auth()->user();
-
-            // Memanfaatkan accessor getJenisRoleAttribute() yang sudah kamu buat di model UserManage
-            $role = strtolower($user?->jenis_role ?? 'dosen');
-        @endphp
+            $role = strtolower($user?->roles()->pluck('jenis_role')->first() ?? 'dosen');
+        @endphp 
 
         {{-- ============================================================ --}}
         {{-- MENU OPERATOR --}}
@@ -81,7 +78,7 @@
                         class="{{ request()->routeIs('pimpinan.persetujuan.jabfung') ? 'active' : '' }}">
                         <i class="bi bi-briefcase me-2"></i> Jabfung
                     </a>
-                    
+
                 </div>
             </div>
             {{-- ============================================================ --}}

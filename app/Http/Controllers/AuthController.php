@@ -26,7 +26,7 @@ class AuthController extends Controller
 
             // --- LOGIKA REDIRECT BERBASIS ROLE ---
             $user = Auth::user();
-            $role = strtolower($user->jenis_role); // Menggunakan accessor yang sudah kamu buat
+            $role = strtolower($user->roles()->pluck('jenis_role')->first() ?? 'dosen'); // Menggunakan accessor yang sudah kamu buat
 
             if ($role === 'operator') {
                 return redirect()->intended('/operator/data-diri');
