@@ -579,6 +579,11 @@
     </form>
 
 </div>
+@endsection
+
+
+@push('scripts')
+  <script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>  
 
 <script>
 
@@ -1009,5 +1014,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+@endpush
 
-@endsection

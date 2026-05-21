@@ -17,6 +17,9 @@
             <a href="{{ url('/operator/data-diri') }}" class="{{ request()->is('operator/data-diri*') ? 'active' : '' }}">
                 <i class="fa-solid fa-house me-2"></i> Data Diri
             </a>
+            <a href="{{ url('/operator/manajemen_akun') }}" class="{{ request()->is('operator/data-diri*') ? 'active' : '' }}">
+                <i class="fa-solid fa-house me-2"></i> Manajemen Akun
+            </a>
 
             <div class="menu-group">
                 <div class="menu-group-label {{ request()->is('operator/verifikasi*') ? 'active' : '' }}"

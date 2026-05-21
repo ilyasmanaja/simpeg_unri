@@ -78,25 +78,83 @@ class PegawaiController extends Controller
     {
         $request->validate([
             'nama_lengkap' => 'required|string|max:255',
+
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'nik' => 'nullable|string|max:16|unique:PEGAWAI,nik',
+
+            // NIK → wajib angka & maksimal 16 digit
+            'nik' => [
+                'nullable',
+                'digits_between:1,16',
+                'unique:PEGAWAI,nik'
+            ],
+
             'tanggal_lahir' => 'nullable|date',
+
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'nomor_hp' => 'nullable|string|max:20',
-            'nomor_hp_darurat' => 'nullable|string|max:20',
+
+            // No HP → wajib angka
+            'nomor_hp' => [
+                'nullable',
+                'digits_between:1,20'
+            ],
+
+            // No HP Darurat → wajib angka
+            'nomor_hp_darurat' => [
+                'nullable',
+                'digits_between:1,20'
+            ],
+
+            // jurusan HARUS string, bukan numeric
             'jurusan' => 'nullable|string|max:255',
+
             'prodi' => 'nullable|string|max:255',
-            'nidn' => 'nullable|string|max:10',
-            'nip' => 'nullable|string|max:18|unique:PEGAWAI,nip',
+
+            // NIDN → angka max 10 digit
+            'nidn' => [
+                'nullable',
+                'digits_between:1,10'
+            ],
+
+            // NIP → angka max 18 digit
+            'nip' => [
+                'nullable',
+                'digits_between:1,18',
+                'unique:PEGAWAI,nip'
+            ],
+
             'status_pegawai' => 'required|in:PNS,Non PNS',
 
             'id_jabfung' => 'nullable|exists:JABATAN_FUNGSIONAL,id_jabfung',
+
             'id_panggol' => 'nullable|exists:PANGKAT_GOLONGAN,id_panggol',
 
             'email' => 'required|email|unique:USER_MANAGE,email',
 
             'roles' => 'nullable|array',
             'roles.*' => 'exists:ROLE,id_role',
+        ], [
+
+            // =========================
+            // CUSTOM MESSAGE
+            // =========================
+
+            'nik.digits_between' => 'NIK harus berupa angka dan maksimal 16 digit.',
+            'nik.unique' => 'NIK sudah terdaftar.',
+
+            'nomor_hp.digits_between' => 'Nomor HP harus berupa angka.',
+
+            'nomor_hp_darurat.digits_between' => 'Nomor HP darurat harus berupa angka.',
+
+            'nidn.digits_between' => 'NIDN harus berupa angka dan maksimal 10 digit.',
+
+            'nip.digits_between' => 'NIP harus berupa angka dan maksimal 18 digit.',
+            'nip.unique' => 'NIP sudah terdaftar.',
+
+            'email.unique' => 'Email sudah digunakan.',
+
+            'foto.image' => 'File foto harus berupa gambar.',
+            'foto.mimes' => 'Foto harus format JPG, JPEG, atau PNG.',
+            'foto.max' => 'Ukuran foto maksimal 2 MB.',
         ]);
 
 
@@ -180,22 +238,29 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::with('user')->findOrFail($id);
 
         $request->validate([
+
             'nama_lengkap' => 'required|string|max:255',
 
             'nik' => [
                 'nullable',
-                'string',
-                'max:16',
-                Rule::unique('PEGAWAI', 'nik')->ignore($pegawai->id_pegawai, 'id_pegawai')
+                'digits_between:1,16',
+                Rule::unique('PEGAWAI', 'nik')
+                    ->ignore($pegawai->id_pegawai, 'id_pegawai')
             ],
 
             'tanggal_lahir' => 'nullable|date',
 
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
 
-            'nomor_hp' => 'nullable|string|max:20',
+            'nomor_hp' => [
+                'nullable',
+                'digits_between:1,20'
+            ],
 
-            'nomor_hp_darurat' => 'nullable|string|max:20',
+            'nomor_hp_darurat' => [
+                'nullable',
+                'digits_between:1,20'
+            ],
 
             'email' => [
                 'required',
@@ -205,18 +270,22 @@ class PegawaiController extends Controller
             ],
 
             'jurusan' => 'nullable|string|max:255',
+
             'prodi' => 'nullable|string|max:255',
 
             'status_pegawai' => 'required|in:PNS,Non PNS',
 
             'nip' => [
                 'nullable',
-                'string',
+                'digits_between:8,30',
                 Rule::unique('PEGAWAI', 'nip')
                     ->ignore($pegawai->id_pegawai, 'id_pegawai')
             ],
 
-            'nidn' => 'nullable|string|max:10',
+            'nidn' => [
+                'nullable',
+                'digits_between:1,10'
+            ],
 
             'id_jabfung' => 'nullable|exists:JABATAN_FUNGSIONAL,id_jabfung',
 
@@ -227,6 +296,90 @@ class PegawaiController extends Controller
             'roles' => 'nullable|array',
 
             'roles.*' => 'exists:ROLE,id_role',
+
+        ], [
+
+            // =========================
+            // NAMA
+            // =========================
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
+            'nama_lengkap.max'      => 'Nama lengkap maksimal 255 karakter.',
+
+            // =========================
+            // NIK
+            // =========================
+            'nik.digits_between' => 'NIK harus terdiri dari 16 digit angka.',
+            'nik.unique' => 'NIK sudah terdaftar.',
+
+            // =========================
+            // TANGGAL LAHIR
+            // =========================
+            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
+
+            // =========================
+            // JENIS KELAMIN
+            // =========================
+            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
+            'jenis_kelamin.in'       => 'Jenis kelamin tidak valid.',
+
+            // =========================
+            // NOMOR HP
+            // =========================
+            'nomor_hp.digits_between' => 'Nomor HP harus terdiri dari 10 sampai 20 digit angka.',
+
+            'nomor_hp_darurat.digits_between' =>
+            'Nomor HP darurat harus terdiri dari 10 sampai 20 digit angka.',
+
+            // =========================
+            // EMAIL
+            // =========================
+            'email.required' => 'Email wajib diisi.',
+            'email.email'    => 'Format email tidak valid.',
+            'email.unique'   => 'Email sudah digunakan.',
+
+            // =========================
+            // JURUSAN & PRODI
+            // =========================
+            'jurusan.max' => 'Jurusan maksimal 255 karakter.',
+            'prodi.max'   => 'Prodi maksimal 255 karakter.',
+
+            // =========================
+            // STATUS
+            // =========================
+            'status_pegawai.required' => 'Status pegawai wajib dipilih.',
+            'status_pegawai.in'       => 'Status pegawai tidak valid.',
+
+            // =========================
+            // NIP
+            // =========================
+            'nip.digits_between' => 'NIP harus berupa angka.',
+            'nip.unique'         => 'NIP sudah terdaftar.',
+
+            // =========================
+            // NIDN
+            // =========================
+            'nidn.digits_between' => 'NIDN harus terdiri dari 10 digit angka.',
+
+            // =========================
+            // JABFUNG
+            // =========================
+            'id_jabfung.exists' => 'Jabatan fungsional tidak valid.',
+
+            // =========================
+            // PANGKAT
+            // =========================
+            'id_panggol.exists' => 'Pangkat/Golongan tidak valid.',
+
+            // =========================
+            // PASSWORD
+            // =========================
+            'password.min' => 'Password minimal 6 karakter.',
+
+            // =========================
+            // ROLE
+            // =========================
+            'roles.array'    => 'Format role tidak valid.',
+            'roles.*.exists' => 'Role yang dipilih tidak valid.',
         ]);
 
         $pegawai->update([

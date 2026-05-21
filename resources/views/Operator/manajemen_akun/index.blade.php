@@ -299,10 +299,13 @@
         </div>
 
     </div>
+@endsection
+
+@push('scripts')
+    <script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>
 
     <script>
         function confirmDelete(button) {
-
             const form = button.closest('.form-hapus');
 
             Swal.fire({
@@ -315,34 +318,37 @@
                 confirmButtonText: 'Ya, Hapus!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
-
                 if (result.isConfirmed) {
                     form.submit();
                 }
-
             });
         }
-    </script>
 
-    @if (session('success'))
-        <script>
+        // ALERT SUCCESS / ERROR
+        @if (session('success'))
             Swal.fire({
                 icon: 'success',
-                title: 'Berhasil',
-                text: @json(session('success')),
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
                 timer: 2000,
                 showConfirmButton: false
             });
-        </script>
-    @endif
+        @endif
 
-    @if (session('error'))
-        <script>
+        @if (session('error'))
             Swal.fire({
                 icon: 'error',
-                title: 'Gagal',
-                text: @json(session('error'))
+                title: 'Gagal!',
+                text: "{{ session('error') }}"
             });
-        </script>
-    @endif
-@endsection
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'warning',
+                title: 'Validasi Gagal!',
+                html: `{!! implode('<br>', $errors->all()) !!}`
+            });
+        @endif
+    </script>
+@endpush

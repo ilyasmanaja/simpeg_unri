@@ -275,6 +275,36 @@
             </div>
         </form>
     </div>
-
-    
 @endsection
+@push('scripts')
+<script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>
+    
+
+   <script>
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: "{{ session('error') }}"
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            icon: 'warning',
+            title: 'Validasi Gagal!',
+            html: `{!! implode('<br>', $errors->all()) !!}`
+        });
+    @endif
+</script>
+@endpush

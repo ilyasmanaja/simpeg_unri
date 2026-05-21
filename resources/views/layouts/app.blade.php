@@ -33,7 +33,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>
+    
     @stack('scripts')
 </body>
 
