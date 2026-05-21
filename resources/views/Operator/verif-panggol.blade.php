@@ -78,6 +78,7 @@
                                 @php
                                     $pegawai = $item->berkas->pegawai ?? null;
                                     $pengajuan = $item->berkas->pengajuan ?? null;
+                                    $nomorUsulan = $row->keterangan_tambahan ?? '—';
                                     $nama = $pegawai?->nama_lengkap ?? '-';
                                     $nip = $pegawai?->nip ?? '-';
                                     $nidn = $pegawai?->nidn ?? '-';
@@ -93,11 +94,10 @@
 
                                     // Daftar berkas yang harus dicek untuk panggol
                                     $daftarBerkas = [
-                                        'SK Pangkat Terakhir',
-                                        'Ijazah Terakhir',
-                                        'SKP 2 Tahun Terakhir',
-                                        'Surat Pernyataan',
-                                        'Pas Foto',
+                                        'sk_cpns' => 'SK CPNS',
+                                        'sk_pns' => 'SK PNS',
+                                        'pak' => 'PAK',
+                                        'publikasi' => 'Publikasi',
                                     ];
                                 @endphp
                                 <div class="antrean-row">
@@ -157,10 +157,10 @@
                                                 <div class="detail-field"><span class="detail-label">Tanggal
                                                         Pengajuan</span><span
                                                         class="detail-val">{{ $tgl }}</span></div>
-                                                @if ($panggol?->nomor_sk)
+                                                @if ($nomorUsulan)
                                                     <div class="detail-field full"><span class="detail-label">Nomor
-                                                            SK</span><span
-                                                            class="detail-val">{{ $panggol->nomor_sk }}</span></div>
+                                                            SK</span><span class="detail-val">{{ $nomorUsulan }}</span>
+                                                    </div>
                                                 @endif
                                             </div>
 
@@ -218,12 +218,12 @@
                                                     </div>
                                                     <div class="berkas-checkbox-list"
                                                         id="berkas-list-{{ $item->id_verifikasi }}">
-                                                        @foreach ($daftarBerkas as $bk)
+                                                        @foreach ($daftarBerkas as $key => $label)
                                                             <label class="berkas-checkbox-item">
                                                                 <input type="checkbox"
                                                                     class="berkas-cb-{{ $item->id_verifikasi }}"
-                                                                    value="{{ $bk }}">
-                                                                <span>{{ $bk }}</span>
+                                                                    value="{{ $key }}">
+                                                                <span>{{ $label }}</span>
                                                             </label>
                                                         @endforeach
                                                     </div>

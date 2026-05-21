@@ -52,11 +52,6 @@ class PangkatController extends Controller
         return $pegawai->nidn ? 'dosen' : 'tendik';
     }
 
-    private function getUrutanDosen(?string $namaJabfung): int
-    {
-        return (int) array_search($namaJabfung, self::JABFUNG_DOSEN);
-    }
-
     // ══════════════════════════════════════
     // Helper: Upload Berkas
     // ══════════════════════════════════════
@@ -252,7 +247,6 @@ class PangkatController extends Controller
 
             DB::commit();
             return redirect()->route('dosen.pangkat-golongan.index')->with('success', 'Pengajuan berhasil dikirim.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -344,7 +338,22 @@ class PangkatController extends Controller
         ];
         $jabfungInfo = $jabfungSekarang ? ($jabfungToPangkat[$jabfungSekarang] ?? null) : null;
 
-        return view('dosen.pangkat.form', compact('data', 'mode', 'berkasAda', 'semuaPangkat', 'urutan_sekarang', 'urutan_target', 'jabfungSekarang', 'jabfungInfo'));
+        // --- BLOK KODE YANG SEBELUMNYA TERLEWAT ---
+        // Mencari riwayat penolakan terakhir untuk mengambil daftar berkas yang salah
+        $berkasIds = $data->berkas->pluck('id_berkas');
+        $verifikasiTolak = Verifikasi::whereIn('id_berkas', $berkasIds)
+            ->where('status_verifikasi', 'Ditolak')
+            ->orderByDesc('tanggal_proses')
+            ->first();
+
+        $berkasBermasalahArr = [];
+        if ($verifikasiTolak && $verifikasiTolak->berkas_bermasalah) {
+            // Ubah JSON dari database kembali menjadi array
+            $berkasBermasalahArr = json_decode($verifikasiTolak->berkas_bermasalah, true) ?? [];
+        }
+        // ------------------------------------------
+
+        return view('dosen.pangkat.form', compact('pegawai', 'data', 'mode', 'berkasAda', 'semuaPangkat', 'urutan_sekarang', 'urutan_target', 'jabfungSekarang', 'jabfungInfo', 'berkasBermasalahArr'));
     }
 
     public function update(Request $request, $id)
@@ -384,7 +393,6 @@ class PangkatController extends Controller
 
             DB::commit();
             return redirect()->route('dosen.pangkat-golongan.index')->with('success', 'Data berhasil diperbarui.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -413,7 +421,6 @@ class PangkatController extends Controller
 
             DB::commit();
             return redirect()->route('dosen.pangkat-golongan.index')->with('success', 'Pengajuan berhasil dihapus.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->route('dosen.pangkat-golongan.index')->with('error', 'Gagal menghapus: ' . $e->getMessage());

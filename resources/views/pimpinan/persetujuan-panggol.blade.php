@@ -156,7 +156,7 @@
                                                     <span class="detail-label">Tanggal Pengajuan</span>
                                                     <span class="detail-val">{{ $tgl }}</span>
                                                 </div>
-                                                @if ($panggol?->nomor_sk)
+                                                @if ($panggolNm?->nomor_sk)
                                                     <div class="detail-field full">
                                                         <span class="detail-label">Nomor SK</span>
                                                         <span class="detail-val">{{ $panggol->nomor_sk }}</span>

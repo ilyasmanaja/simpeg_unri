@@ -101,7 +101,6 @@
                                         <a href="{{ route('dosen.surat.edit', $item->id_surat_tugas) }}" class="btn btn-perbarui">Perbarui</a>
                                         <a href="{{ route('dosen.surat.destroy', $item->id_surat_tugas) }}" class="btn btn-hapus btn-delete">Hapus</a>
                                     @elseif (str_contains($st, 'ditolak'))
-                                        <a href="{{ route('dosen.surat.revisi', $item->id_surat_tugas) }}" class="btn btn-ajukan-kembali">Revisi</a>
                                     @endif
                                 </div>
                             </td>

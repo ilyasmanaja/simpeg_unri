@@ -159,10 +159,6 @@
                                                 class="btn btn-secondary btn-aksi">
                                                 <i class="bi bi-eye me-1"></i>Detail
                                             </button>
-                                            <a href="{{ route('dosen.jabatanfungsional.revisi', $row->id_pengajuan) }}"
-                                                class="btn btn-warning btn-aksi">
-                                                <i class="bi bi-arrow-repeat me-1"></i>Revisi
-                                            </a>
 
                                             {{-- Tolak Persetujuan → Detail --}}
                                         @elseif ($row->status_pengajuan === 'tolak_persetujuan')

@@ -173,9 +173,10 @@ class VerifikasiController extends Controller
     // ----------------------------------------------------------------
     public function tolak(Request $request, $id_verifikasi)
     {
+        // 1. Ubah validasi berkas_bermasalah menjadi string
         $request->validate([
             'keterangan' => 'required|string|max:500',
-            'berkas_bermasalah' => 'nullable|array',
+            'berkas_bermasalah' => 'nullable|string', 
         ]);
 
         $verifikasi = Verifikasi::findOrFail($id_verifikasi);
@@ -184,7 +185,10 @@ class VerifikasiController extends Controller
             return back()->with('error', 'Status tidak valid untuk ditolak.');
         }
 
-        $berkasBermasalah = $request->input('berkas_bermasalah', []);
+        // 2. Decode string JSON dari JavaScript menjadi Array PHP
+        $berkasStr = $request->input('berkas_bermasalah');
+        $berkasBermasalah = $berkasStr ? json_decode($berkasStr, true) : [];
+
         $keteranganFinal = $request->input('keterangan');
         if (!empty($berkasBermasalah)) {
             $keteranganFinal .= ' [Berkas bermasalah: ' . implode(', ', $berkasBermasalah) . ']';
@@ -200,7 +204,7 @@ class VerifikasiController extends Controller
             $suratTugas = $verifikasi->berkas->suratTugas ?? null;
             if ($suratTugas) {
                 $suratTugas->update([
-                    'status' => 'ditolak (verifikasi)', // Teks ini yang dikenali oleh Blade Dosen
+                    'status' => 'ditolak (verifikasi)', 
                     'alasan_penolakan' => $keteranganFinal
                 ]);
             }
@@ -210,9 +214,9 @@ class VerifikasiController extends Controller
                 $pengajuan->update(['status_pengajuan' => 'tolak_verifikasi']);
             }
 
-            // Simpan daftar berkas bermasalah di tabel verifikasi sebagai JSON agar bisa dibaca Dosen
+            // 3. Simpan langsung string JSON-nya ke database (karena sudah berbentuk JSON dari JS)
             $verifikasi->update([
-                'berkas_bermasalah' => json_encode($berkasBermasalah)
+                'berkas_bermasalah' => $berkasStr
             ]);
         }
 
