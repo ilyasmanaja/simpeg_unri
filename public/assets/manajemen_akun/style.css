@@ -233,8 +233,8 @@ hr {
 .req { color:#dc3545; }
 
 /* badges tabel */
-.badge-asn { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:700; }
-.badge-nonasn { background:#fff7ed; color:#9a3412; border:1px solid #fdba74; border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:700; }
+.badge-pns { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:700; }
+.badge-nonpns { background:#fff7ed; color:#9a3412; border:1px solid #fdba74; border-radius:20px; padding:3px 10px; font-size:.73rem; font-weight:700; }
 
 /* pwd chip */
 .pwd-chip { background:#f3f4f6; border:1px solid #d1d5db; border-radius:8px; padding:5px 12px; font-family:monospace; font-size:.88rem; color:#374151; display:inline-flex; align-items:center; gap:8px; }
@@ -283,18 +283,18 @@ hr {
 .ha-check-icon { color:#fff; font-size:.65rem; display:none; }
 .hak-akses-card input:checked + .hak-akses-label .ha-check-icon { display:block; }
 
-/* tipe ASN radio pills */
-.tipe-asn-row { display:flex; gap:8px; }
-.tipe-asn-row .tipe-opt { flex:1; }
-.tipe-asn-row input[type="radio"] { display:none; }
-.tipe-asn-row label {
+/* tipe pns radio pills */
+.tipe-pns-row { display:flex; gap:8px; }
+.tipe-pns-row .tipe-opt { flex:1; }
+.tipe-pns-row input[type="radio"] { display:none; }
+.tipe-pns-row label {
   display:flex; align-items:center; justify-content:center; gap:6px;
   width:100%; padding:9px 12px; border:2px solid #e5e7eb;
   border-radius:10px; cursor:pointer; font-size:.85rem; font-weight:600;
   color:#6c757d; transition:.15s; background:#f9fafb;
 }
-.tipe-asn-row input:checked + label { border-color:#d32f2f; background:#fff5f5; color:#d32f2f; }
-.tipe-asn-row input:disabled + label { opacity:0.4; cursor:not-allowed; }
+.tipe-pns-row input:checked + label { border-color:#d32f2f; background:#fff5f5; color:#d32f2f; }
+.tipe-pns-row input:disabled + label { opacity:0.4; cursor:not-allowed; }
 
 /* hint pimpinan */
 .hint-pimpinan {
@@ -335,3 +335,4 @@ ader-left { display: flex; align-items: center; gap: 20px; }
 .pagination-wrapper nav div:first-child {
     display: none;
 }
+

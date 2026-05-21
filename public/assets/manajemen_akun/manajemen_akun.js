@@ -50,9 +50,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .includes('pimpinan');
     }
 
-    function isNonASN()
+    function isNonPNS()
     {
-        return statusEl.value === 'Non ASN';
+        return statusEl.value === 'Non PNS';
     }
 
     function disable(cb, title = '')
@@ -174,10 +174,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // ======================================
-        // NON ASN
+        // NON PNS
         // ======================================
 
-        if (isNonASN())
+        if (isNonPNS())
         {
             if (dosenCb)
             {
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 disable(
                     dosenCb,
-                    'Non ASN tidak dapat memiliki role Dosen'
+                    'Non PNS tidak dapat memiliki role Dosen'
                 );
             }
 
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 disable(
                     pimpinanCb,
-                    'Non ASN tidak dapat memiliki role Pimpinan'
+                    'Non PNS tidak dapat memiliki role Pimpinan'
                 );
             }
         }
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // VALIDASI PIMPINAN
         // ======================================
 
-        if (pimpinanCb && !isNonASN())
+        if (pimpinanCb && !isNonPNS())
         {
             const selectedPangkat =
                 pangkatEl.options[
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (tendikCb?.checked)
         {
-            if (!isNonASN())
+            if (!isNonPNS())
             {
                 disable(dosenCb);
                 disable(pimpinanCb);
@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 );
             }
 
-            if (!isNonASN())
+            if (!isNonPNS())
             {
                 disable(dosenCb);
                 disable(pimpinanCb);

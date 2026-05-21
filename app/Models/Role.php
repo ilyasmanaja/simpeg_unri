@@ -24,4 +24,6 @@ class Role extends Model
         'id_user'
     );
 }
+
+
 }

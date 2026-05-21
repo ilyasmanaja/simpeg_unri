@@ -88,7 +88,7 @@ class PegawaiController extends Controller
             'prodi' => 'nullable|string|max:255',
             'nidn' => 'nullable|string|max:10',
             'nip' => 'nullable|string|max:18|unique:PEGAWAI,nip',
-            'status_pegawai' => 'required|in:ASN,Non ASN',
+            'status_pegawai' => 'required|in:PNS,Non PNS',
 
             'id_jabfung' => 'nullable|exists:JABATAN_FUNGSIONAL,id_jabfung',
             'id_panggol' => 'nullable|exists:PANGKAT_GOLONGAN,id_panggol',
@@ -99,7 +99,7 @@ class PegawaiController extends Controller
             'roles.*' => 'exists:ROLE,id_role',
         ]);
 
-       
+
 
         $foto = null;
 
@@ -142,9 +142,13 @@ class PegawaiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $pegawai = Pegawai::with('user.roles')->findOrFail($id);
+        $pegawai = Pegawai::with([
+            'user.roles',
+            'jabatanFungsional',
+            'pangkatGolongan'
+        ])->findOrFail($id);
 
         return view('Operator.manajemen_akun.detail', compact('pegawai'));
     }
@@ -203,7 +207,7 @@ class PegawaiController extends Controller
             'jurusan' => 'nullable|string|max:255',
             'prodi' => 'nullable|string|max:255',
 
-            'status_pegawai' => 'required|in:ASN,Non ASN',
+            'status_pegawai' => 'required|in:PNS,Non PNS',
 
             'nip' => [
                 'nullable',

@@ -19,6 +19,7 @@ class Pegawai extends Model
         'tanggal_lahir',
         'jenis_kelamin',
         'nomor_hp',
+        'nomor_hp_darurat',
         'jurusan',
         'prodi',
         'status_pegawai',

@@ -3,526 +3,1008 @@
 @section('title', 'Edit Akun Pegawai')
 
 @section('content')
-    <div class="container-fluid p-4">
 
-        <form action="{{ route('operator.manajemen_akun.update', $pegawai->id_pegawai) }}" method="POST"
-            enctype="multipart/form-data">
+<div class="container-fluid p-4">
 
-            @csrf
-            @method('PUT')
+    <form action="{{ route('operator.manajemen_akun.update', $pegawai->id_pegawai) }}"
+        method="POST"
+        enctype="multipart/form-data">
 
-            <div class="container-box">
+        @csrf
+        @method('PUT')
 
-                <div class="header-box mb-4">
+        <div class="container-box">
 
-                    <div class="header-left">
+            {{-- ================= HEADER ================= --}}
+            <div class="header-box mb-4">
 
-                        <div class="icon-box">
-                            <i class="bi bi-pencil-square"></i>
-                        </div>
+                <div class="header-left">
 
-                        <div>
+                    <div class="icon-box">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
 
-                            <h1 class="page-title">
-                                Edit Akun Pegawai
-                            </h1>
+                    <div>
 
-                            <p class="page-subtitle">
-                                Halaman edit akun pegawai
-                            </p>
+                        <h1 class="page-title">
+                            Edit Akun Pegawai
+                        </h1>
 
-                        </div>
+                        <p class="page-subtitle">
+                            Halaman edit akun pegawai
+                        </p>
 
                     </div>
 
                 </div>
 
-                <form action="{{ route('operator.manajemen_akun.update', $pegawai->id_pegawai) }}" method="POST"
-                    enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
+            </div>
 
-                    <div class="container-box">
+            {{-- ================= IDENTITAS ================= --}}
+            <div class="section-divider">
+                <i class="bi bi-person-vcard-fill"></i> Data Identitas
+            </div>
 
-                        {{-- ================= IDENTITAS ================= --}}
-                        <div class="section-divider">
-                            <i class="bi bi-person-vcard-fill"></i> Data Identitas
-                        </div>
+            <div class="row g-3">
 
-                        <div class="row g-3">
+                <div class="col-md-6">
 
-                            <div class="col-md-6">
+                    <label class="form-label">
+                        Foto Pegawai
+                    </label>
 
-                                <label class="form-label">Foto Pegawai</label>
+                    <input type="file"
+                        name="foto"
+                        class="form-control"
+                        accept="image/*"
+                        id="previewFotoInput">
 
-                                <input type="file" name="foto" class="form-control" accept="image/*"
-                                    id="previewFotoInput">
+                    <img id="previewFoto"
+                        src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($pegawai->nama_lengkap) }}"
+                        class="mt-3"
+                        style="width:120px;height:120px;object-fit:cover;border-radius:14px;display:block;">
 
-                                <img id="previewFoto"
-                                    src="{{ $pegawai->foto ? asset('storage/' . $pegawai->foto) : 'https://ui-avatars.com/api/?name=' . urlencode($pegawai->nama_lengkap) }}"
-                                    class="mt-3"
-                                    style="width:120px;height:120px;object-fit:cover;border-radius:14px;display:block;">
+                </div>
 
-                            </div>
+                <div class="col-md-6">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Lengkap</label>
+                    <label class="form-label">
+                        Nama Lengkap
+                    </label>
 
-                                <input type="text" name="nama_lengkap" class="form-control"
-                                    value="{{ old('nama_lengkap', $pegawai->nama_lengkap) }}">
-                            </div>
+                    <input type="text"
+                        name="nama_lengkap"
+                        class="form-control"
+                        value="{{ old('nama_lengkap', $pegawai->nama_lengkap) }}">
 
-                            <div class="col-md-6">
-                                <label class="form-label">NIK</label>
+                </div>
 
-                                <input type="text" name="nik" class="form-control"
-                                    value="{{ old('nik', $pegawai->nik) }}">
-                            </div>
+                <div class="col-md-6">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Tanggal Lahir</label>
+                    <label class="form-label">
+                        NIK
+                    </label>
 
-                                <input type="date" name="tanggal_lahir" class="form-control"
-                                    value="{{ old('tanggal_lahir', $pegawai->tanggal_lahir) }}">
-                            </div>
+                    <input type="text"
+                        name="nik"
+                        id="f_nik"
+                        class="form-control"
+                        maxlength="16"
+                        value="{{ old('nik', $pegawai->nik) }}">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Jenis Kelamin</label>
+                </div>
 
-                                <select name="jenis_kelamin" class="form-select">
-                                    <option value="Laki-laki"
-                                        {{ $pegawai->jenis_kelamin == 'Laki-laki' ? 'selected' : '' }}>
-                                        Laki-laki
-                                    </option>
+                <div class="col-md-6">
 
-                                    <option value="Perempuan"
-                                        {{ $pegawai->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>
-                                        Perempuan
-                                    </option>
-                                </select>
-                            </div>
+                    <label class="form-label">
+                        Tanggal Lahir
+                    </label>
 
-                        </div>
+                    <input type="date"
+                        name="tanggal_lahir"
+                        class="form-control"
+                        value="{{ old('tanggal_lahir', $pegawai->tanggal_lahir) }}">
 
-                        {{-- ================= KONTAK ================= --}}
-                        <div class="section-divider mt-5">
-                            <i class="bi bi-telephone-fill"></i> Data Kontak
-                        </div>
+                </div>
 
-                        <div class="row g-3">
+                <div class="col-md-6">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Nomor HP</label>
+                    <label class="form-label">
+                        Jenis Kelamin
+                    </label>
 
-                                <input type="text" name="nomor_hp" class="form-control"
-                                    value="{{ old('nomor_hp', $pegawai->nomor_hp) }}">
-                            </div>
+                    <select name="jenis_kelamin" class="form-select">
 
-                            <div class="col-md-6">
-                                <label class="form-label">No HP Darurat</label>
+                        <option value="Laki-laki"
+                            {{ $pegawai->jenis_kelamin == 'Laki-laki' ? 'selected' : '' }}>
+                            Laki-laki
+                        </option>
 
-                                <input type="text" name="nomor_hp_darurat" class="form-control"
-                                    value="{{ old('nomor_hp_darurat', $pegawai->nomor_hp_darurat) }}">
-                            </div>
+                        <option value="Perempuan"
+                            {{ $pegawai->jenis_kelamin == 'Perempuan' ? 'selected' : '' }}>
+                            Perempuan
+                        </option>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Email</label>
+                    </select>
 
-                                <input type="email" name="email" class="form-control"
-                                    value="{{ old('email', $pegawai->user->email ?? '') }}">
-                            </div>
+                </div>
 
-                        </div>
+            </div>
 
-                        {{-- ================= AKADEMIK ================= --}}
-                        <div class="section-divider mt-5">
-                            <i class="bi bi-mortarboard-fill"></i> Data Akademik
-                        </div>
+            {{-- ================= KONTAK ================= --}}
+            <div class="section-divider mt-5">
+                <i class="bi bi-telephone-fill"></i> Data Kontak
+            </div>
 
-                        <div class="row g-3">
+            <div class="row g-3">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Jurusan</label>
+                <div class="col-md-6">
 
-                                <input type="text" name="jurusan" class="form-control"
-                                    value="{{ old('jurusan', $pegawai->jurusan) }}">
-                            </div>
+                    <label class="form-label">
+                        Nomor HP
+                    </label>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Program Studi</label>
+                    <input type="text"
+                        name="nomor_hp"
+                        class="form-control"
+                        value="{{ old('nomor_hp', $pegawai->nomor_hp) }}">
 
-                                <input type="text" name="prodi" class="form-control"
-                                    value="{{ old('prodi', $pegawai->prodi) }}">
-                            </div>
+                </div>
 
-                        </div>
+                <div class="col-md-6">
 
-                        {{-- ================= KEPEGAWAIAN ================= --}}
-                        <div class="section-divider mt-5">
-                            <i class="bi bi-briefcase-fill"></i> Data Kepegawaian
-                        </div>
+                    <label class="form-label">
+                        No HP Darurat
+                    </label>
 
-                        <div class="row g-3">
+                    <input type="text"
+                        name="nomor_hp_darurat"
+                        class="form-control"
+                        value="{{ old('nomor_hp_darurat', $pegawai->nomor_hp_darurat) }}">
 
-                            <div class="col-md-6">
-                                <label class="form-label">Status Pegawai</label>
+                </div>
 
-                                <select name="status_pegawai" class="form-select">
-                                    <option value="ASN" {{ $pegawai->status_pegawai == 'ASN' ? 'selected' : '' }}>
-                                        ASN
-                                    </option>
+                <div class="col-md-6">
 
-                                    <option value="Non ASN" {{ $pegawai->status_pegawai == 'Non ASN' ? 'selected' : '' }}>
-                                        Non ASN
-                                    </option>
-                                </select>
-                            </div>
+                    <label class="form-label">
+                        Email
+                    </label>
 
-                            <div class="col-md-6">
-                                <label class="form-label">NIP</label>
+                    <input type="email"
+                        name="email"
+                        class="form-control"
+                        value="{{ old('email', $pegawai->user->email ?? '') }}">
 
-                                <input type="text" name="nip" class="form-control"
-                                    value="{{ old('nip', $pegawai->nip) }}">
-                            </div>
+                </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">NIDN</label>
+            </div>
 
-                                <input type="text" name="nidn" class="form-control"
-                                    value="{{ old('nidn', $pegawai->nidn) }}">
-                            </div>
+            {{-- ================= AKADEMIK ================= --}}
+            <div class="section-divider mt-5">
+                <i class="bi bi-mortarboard-fill"></i> Data Akademik
+            </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Jabatan Fungsional</label>
+            <div class="row g-3">
 
-                                <select name="id_jabfung" class="form-select">
-                                    <option value="">-- Pilih --</option>
+                <div class="col-md-6">
 
-                                    @foreach ($jabfungs as $jabfung)
-                                        <option value="{{ $jabfung->id_jabfung }}"
-                                            {{ $pegawai->id_jabfung == $jabfung->id_jabfung ? 'selected' : '' }}>
-                                            {{ $jabfung->nama_jabfung }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                    <label class="form-label">
+                        Jurusan
+                    </label>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Pangkat / Golongan</label>
+                    <input type="text"
+                        name="jurusan"
+                        class="form-control"
+                        value="{{ old('jurusan', $pegawai->jurusan) }}">
 
-                                <select name="id_panggol" class="form-select">
-                                    <option value="">-- Pilih --</option>
+                </div>
 
-                                    @foreach ($pangkats as $pangkat)
-                                        <option value="{{ $pangkat->id_panggol }}"
-                                            {{ $pegawai->id_panggol == $pangkat->id_panggol ? 'selected' : '' }}>
-                                            {{ $pangkat->pangkat }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <div id="warn_pangkat_pimpinan" class="mt-2 p-2"
-                                    style="display:none;background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;font-size:.78rem;color:#b91c1c;">
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                    Role <strong>Pimpinan</strong> membutuhkan minimal pangkat <strong>IV/a</strong>.
-                                </div>
+                <div class="col-md-6">
 
-                                <div id="warn_jabfung_pimpinan" class="col-12" style="display:none;">
-                                    <div class="p-2"
-                                        style="background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;font-size:.78rem;color:#b91c1c;">
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                        Role <strong>Pimpinan</strong> membutuhkan minimal jabatan <strong>Lektor
-                                            Kepala</strong>.
-                                    </div>
-                                </div>
-                            </div>
+                    <label class="form-label">
+                        Program Studi
+                    </label>
 
-                        </div>
+                    <input type="text"
+                        name="prodi"
+                        class="form-control"
+                        value="{{ old('prodi', $pegawai->prodi) }}">
 
-                        {{-- ================= PASSWORD ================= --}}
-                        <div class="section-divider mt-5">
-                            <i class="bi bi-key-fill"></i> Akun Login
-                        </div>
+                </div>
 
-                        <div class="row g-3">
+            </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">Password Baru</label>
+            {{-- ================= KEPEGAWAIAN ================= --}}
+            <div class="section-divider mt-5">
+                <i class="bi bi-briefcase-fill"></i> Data Kepegawaian
+            </div>
 
-                                <input type="password" name="password" class="form-control">
+            <div class="row g-3">
 
-                                <small class="text-muted">
-                                    Kosongkan jika tidak ingin mengganti password
-                                </small>
-                            </div>
+                {{-- STATUS --}}
+                <div class="col-md-6">
 
-                        </div>
+                    <label class="form-label">
+                        Status Pegawai
+                    </label>
 
-                        {{-- ================= ROLE ================= --}}
-                        {{-- ================= ROLE ================= --}}
-                        <div class="section-divider mt-5">
-                            <i class="bi bi-shield-check"></i> Hak Akses
-                        </div>
+                    <select name="status_pegawai"
+                        id="f_status"
+                        class="form-select">
 
-                        <p style="font-size:.82rem;color:#6c757d;margin-bottom:12px;">
-                            Pilih role / hak akses yang dimiliki pegawai.
-                        </p>
+                        <option value="PNS"
+                            {{ $pegawai->status_pegawai == 'PNS' ? 'selected' : '' }}>
+                            PNS
+                        </option>
 
-                        {{-- PANDUAN --}}
-                        <div class="hint-hak-akses mb-3">
+                        <option value="Non PNS"
+                            {{ $pegawai->status_pegawai == 'Non PNS' ? 'selected' : '' }}>
+                            Non PNS
+                        </option>
 
-                            <strong>
-                                <i class="bi bi-info-circle me-1"></i>
-                                Panduan kombinasi:
-                            </strong>
+                    </select>
 
-                            <ul class="mb-0">
-                                <li><strong>Pimpinan</strong>: bisa sendiri atau + Dosen</li>
-                                <li><strong>Dosen</strong>: bisa sendiri atau + Pimpinan</li>
-                                <li><strong>Tendik</strong>: bisa sendiri atau + Operator</li>
-                                <li><strong>Operator</strong>: harus dikombinasikan dengan Tendik</li>
-                            </ul>
+                </div>
+
+                {{-- TIPE --}}
+                <div class="col-12" id="wrap_tipe_pns">
+
+                    <label class="form-label">
+                        Tipe
+                    </label>
+
+                    @php
+                        $isDosen = false;
+
+                        if ($pegawai->id_jabfung >= 1 && $pegawai->id_jabfung <= 4) {
+                            $isDosen = true;
+                        }
+                    @endphp
+
+                    <div class="tipe-pns-row">
+
+                        <div class="tipe-opt">
+
+                            <input type="radio"
+                                id="tipe_dosen"
+                                name="tipe_pns_radio"
+                                value="dosen"
+                                {{ $isDosen ? 'checked' : '' }}>
+
+                            <label for="tipe_dosen">
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Dosen
+                            </label>
 
                         </div>
 
-                        {{-- CARD ROLE --}}
-                        <div class="hak-akses-grid">
+                        <div class="tipe-opt">
 
-                            @foreach ($roles as $role)
-                                @php
+                            <input type="radio"
+                                id="tipe_tendik"
+                                name="tipe_pns_radio"
+                                value="tendik"
+                                {{ !$isDosen ? 'checked' : '' }}>
 
-                                    $warna = '#2563eb';
-                                    $icon = 'bi-person-fill';
-                                    $desc = 'Hak akses sistem';
+                            <label for="tipe_tendik">
+                                <i class="bi bi-person-gear"></i>
+                                Tendik
+                            </label>
 
-                                    if (strtolower($role->jenis_role) == 'pimpinan') {
-                                        $warna = '#7c3aed';
-                                        $icon = 'bi-building';
-                                        $desc = 'Akses dashboard pimpinan';
-                                    }
-
-                                    if (strtolower($role->jenis_role) == 'dosen') {
-                                        $warna = '#2563eb';
-                                        $icon = 'bi-mortarboard-fill';
-                                        $desc = 'Akses portal dosen';
-                                    }
-
-                                    if (strtolower($role->jenis_role) == 'tendik') {
-                                        $warna = '#047857';
-                                        $icon = 'bi-person-gear';
-                                        $desc = 'Akses tenaga kependidikan';
-                                    }
-
-                                    if (strtolower($role->jenis_role) == 'operator') {
-                                        $warna = '#b45309';
-                                        $icon = 'bi-shield-lock-fill';
-                                        $desc = 'Akses manajemen sistem';
-                                    }
-
-                                @endphp
-
-                                <div>
-
-                                    <label class="hak-akses-card" style="--ha-color:{{ $warna }};">
-
-                                        <input type="checkbox" name="roles[]" value="{{ $role->id_role }}"
-                                            id="role{{ $role->id_role }}"
-                                            @if ($pegawai->user && $pegawai->user->roles->contains('id_role', $role->id_role)) checked @endif>
-
-                                        <div class="hak-akses-label">
-
-                                            <div class="ha-icon">
-                                                <i class="bi {{ $icon }}"></i>
-                                            </div>
-
-                                            <div>
-
-                                                <div class="ha-text">
-                                                    {{ $role->jenis_role }}
-                                                </div>
-
-                                                <div class="ha-desc">
-                                                    {{ $desc }}
-                                                </div>
-
-                                            </div>
-
-                                            <div class="ha-check">
-                                                <i class="bi bi-check2 ha-check-icon"></i>
-                                            </div>
-
-                                        </div>
-
-                                    </label>
-
-                                </div>
-                            @endforeach
-
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 mt-5">
-                            <a href="{{ route('operator.manajemen_akun.index') }}" class="btn btn-secondary">
-                                Batal
-                            </a>
-
-                            <button class="btn btn-primary">
-                                <i class="b"></i>Update
-                            </button>
                         </div>
 
                     </div>
 
-                </form>
+                    <div id="hint_nondosen"
+                        style="display:none;margin-top:8px;padding:8px 12px;background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;font-size:.78rem;color:#b91c1c;">
 
+                        <i class="bi bi-info-circle-fill me-1"></i>
 
+                        Non PNS hanya dapat memiliki tipe
+                        <strong>Tendik</strong>.
+
+                    </div>
+
+                </div>
+
+                {{-- NIP --}}
+                <div class="col-md-6" id="wrap_nip">
+
+                    <label class="form-label">
+                        NIP
+                    </label>
+
+                    <input type="text"
+                        name="nip"
+                        class="form-control"
+                        value="{{ old('nip', $pegawai->nip) }}">
+
+                </div>
+
+                {{-- NIDN --}}
+                <div class="col-md-6" id="wrap_nidn">
+
+                    <label class="form-label">
+                        NIDN
+                    </label>
+
+                    <input type="text"
+                        name="nidn"
+                        class="form-control"
+                        value="{{ old('nidn', $pegawai->nidn) }}">
+
+                </div>
+
+                {{-- JABFUNG --}}
+                <div class="col-md-6" id="wrap_jabfung">
+
+                    <label class="form-label">
+                        Jabatan Fungsional
+                    </label>
+
+                    <select name="id_jabfung"
+                        id="jabfung"
+                        class="form-select">
+
+                        <option value="">-- Pilih --</option>
+
+                        @foreach ($jabfungs as $jabfung)
+
+                            <option value="{{ $jabfung->id_jabfung }}"
+                                {{ $pegawai->id_jabfung == $jabfung->id_jabfung ? 'selected' : '' }}>
+
+                                {{ $jabfung->jenis_jabfung }}
+
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                {{-- PANGKAT --}}
+                <div class="col-md-6" id="wrap_pangkat">
+
+                    <label class="form-label">
+                        Pangkat / Golongan
+                    </label>
+
+                    <select name="id_panggol"
+                        id="pangkat"
+                        class="form-select">
+
+                        <option value="">-- Pilih --</option>
+
+                        @foreach ($pangkats as $pangkat)
+
+                            <option value="{{ $pangkat->id_panggol }}"
+                                data-gol="{{ $pangkat->jenis_pangkat }}"
+                                {{ $pegawai->id_panggol == $pangkat->id_panggol ? 'selected' : '' }}>
+
+                                {{ $pangkat->jenis_pangkat }} 
+                            </option>
+
+                        @endforeach
+
+                    </select>
+
+                    <div id="warn_pangkat_pimpinan"
+                        class="mt-2 p-2"
+                        style="display:none;background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;font-size:.78rem;color:#b91c1c;">
+
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+
+                        Role <strong>Pimpinan</strong>
+                        membutuhkan minimal pangkat
+                        <strong>IV/a</strong>.
+
+                    </div>
+
+                </div>
+
+                <div class="col-12"
+                    id="warn_jabfung_pimpinan"
+                    style="display:none;">
+
+                    <div class="p-2"
+                        style="background:#fff0f0;border:1px solid #fca5a5;border-radius:8px;font-size:.78rem;color:#b91c1c;">
+
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+
+                        Role <strong>Pimpinan</strong>
+                        membutuhkan minimal jabatan
+                        <strong>Lektor Kepala</strong>.
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </form>
+            {{-- ================= PASSWORD ================= --}}
+            <div class="section-divider mt-5">
+                <i class="bi bi-key-fill"></i> Akun Login
+            </div>
 
-    </div>
+            <div class="row g-3">
 
+                <div class="col-md-6">
 
+                    <label class="form-label">
+                        Password Baru
+                    </label>
 
+                    <input type="password"
+                        name="password"
+                        class="form-control">
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+                    <small class="text-muted">
+                        Kosongkan jika tidak ingin mengganti password
+                    </small>
 
-            // --- Preview foto ---
-            const fotoInput = document.getElementById('previewFotoInput');
-            if (fotoInput) {
-                fotoInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        document.getElementById('previewFoto').src = URL.createObjectURL(file);
-                    }
-                });
+                </div>
+
+            </div>
+
+            {{-- ================= ROLE ================= --}}
+            <div class="section-divider mt-5">
+                <i class="bi bi-shield-check"></i> Hak Akses
+            </div>
+
+            <p style="font-size:.82rem;color:#6c757d;margin-bottom:12px;">
+                Pilih role / hak akses yang dimiliki pegawai.
+            </p>
+
+            <div class="hint-hak-akses mb-3">
+
+                <strong>
+                    <i class="bi bi-info-circle me-1"></i>
+                    Panduan kombinasi:
+                </strong>
+
+                <ul class="mb-0">
+                    <li><strong>Pimpinan</strong>: bisa sendiri atau + Dosen</li>
+                    <li><strong>Dosen</strong>: bisa sendiri atau + Pimpinan</li>
+                    <li><strong>Tendik</strong>: bisa sendiri atau + Operator</li>
+                    <li><strong>Operator</strong>: harus dikombinasikan dengan Tendik</li>
+                </ul>
+
+            </div>
+
+            <div class="hak-akses-grid">
+
+                @foreach ($roles as $role)
+
+                    @php
+
+                        $warna = '#2563eb';
+                        $icon = 'bi-person-fill';
+                        $desc = 'Hak akses sistem';
+
+                        if (strtolower($role->jenis_role) == 'pimpinan') {
+                            $warna = '#7c3aed';
+                            $icon = 'bi-building';
+                            $desc = 'Akses dashboard pimpinan';
+                        }
+
+                        if (strtolower($role->jenis_role) == 'dosen') {
+                            $warna = '#2563eb';
+                            $icon = 'bi-mortarboard-fill';
+                            $desc = 'Akses portal dosen';
+                        }
+
+                        if (strtolower($role->jenis_role) == 'tendik') {
+                            $warna = '#047857';
+                            $icon = 'bi-person-gear';
+                            $desc = 'Akses tenaga kependidikan';
+                        }
+
+                        if (strtolower($role->jenis_role) == 'operator') {
+                            $warna = '#b45309';
+                            $icon = 'bi-shield-lock-fill';
+                            $desc = 'Akses manajemen sistem';
+                        }
+
+                    @endphp
+
+                    <div>
+
+                        <label class="hak-akses-card"
+                            style="--ha-color:{{ $warna }};">
+
+                            <input type="checkbox"
+                                name="roles[]"
+                                value="{{ $role->id_role }}"
+                                data-jenis="{{ strtolower($role->jenis_role) }}"
+                                @if ($pegawai->user && $pegawai->user->roles->contains('id_role', $role->id_role)) checked @endif>
+
+                            <div class="hak-akses-label">
+
+                                <div class="ha-icon">
+                                    <i class="bi {{ $icon }}"></i>
+                                </div>
+
+                                <div>
+
+                                    <div class="ha-text">
+                                        {{ $role->jenis_role }}
+                                    </div>
+
+                                    <div class="ha-desc">
+                                        {{ $desc }}
+                                    </div>
+
+                                </div>
+
+                                <div class="ha-check">
+                                    <i class="bi bi-check2 ha-check-icon"></i>
+                                </div>
+
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+            {{-- BUTTON --}}
+            <div class="d-flex justify-content-end gap-2 mt-5">
+
+                <a href="{{ route('operator.manajemen_akun.index') }}"
+                    class="btn btn-secondary">
+
+                    Batal
+
+                </a>
+
+                <button type="submit"
+                    class="btn btn-primary">
+
+                    <i class="bi bi-check-lg me-1"></i>
+                    Update
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // =========================
+    // PREVIEW FOTO
+    // =========================
+
+    const fotoInput = document.getElementById('previewFotoInput');
+
+    if (fotoInput) {
+
+        fotoInput.addEventListener('change', function(e) {
+
+            const file = e.target.files[0];
+
+            if (file) {
+
+                document.getElementById('previewFoto').src =
+                    URL.createObjectURL(file);
             }
-
-            // --- Role logic ---
-            const checkboxes = document.querySelectorAll('input[name="roles[]"]');
-            const statusEl = document.querySelector('select[name="status_pegawai"]');
-            const pangkatEl = document.querySelector('select[name="id_panggol"]');
-            const jabfungEl = document.querySelector('select[name="id_jabfung"]');
-
-            const golonganPimpinan = ['IV/a', 'IV/b', 'IV/c', 'IV/d', 'IV/e'];
-            const jabfungPimpinan = ['lektor kepala', 'profesor', 'guru besar'];
-
-            function getRole(jenis) {
-                return [...checkboxes].find(cb =>
-                    cb.closest('.hak-akses-card')
-                    .querySelector('.ha-text')
-                    .textContent.trim().toLowerCase() === jenis
-                );
-            }
-
-            const dosenCb = getRole('dosen');
-            const pimpinanCb = getRole('pimpinan');
-            const tendikCb = getRole('tendik');
-            const operatorCb = getRole('operator');
-
-            function isPimpinanChecked() {
-                return pimpinanCb && pimpinanCb.checked;
-            }
-
-            function isNonASN() {
-                return statusEl && statusEl.value === 'Non ASN';
-            }
-
-            function disable(cb) {
-                if (!cb) return;
-                cb.disabled = true;
-                cb.closest('.hak-akses-card').style.opacity = '.45';
-            }
-
-            function enableAll() {
-                checkboxes.forEach(cb => {
-                    cb.disabled = false;
-                    cb.closest('.hak-akses-card').style.opacity = '1';
-                });
-            }
-
-            function updatePimpinanWarnings() {
-                const warnPangkat = document.getElementById('warn_pangkat_pimpinan');
-                const warnJabfung = document.getElementById('warn_jabfung_pimpinan');
-                if (!warnPangkat || !warnJabfung) return;
-
-                if (!isPimpinanChecked()) {
-                    warnPangkat.style.display = 'none';
-                    warnJabfung.style.display = 'none';
-                    return;
-                }
-
-                if (pangkatEl) {
-                    const gol = (pangkatEl.options[pangkatEl.selectedIndex]?.dataset.gol || '').trim();
-                    warnPangkat.style.display = golonganPimpinan.includes(gol) ? 'none' : '';
-                }
-                if (jabfungEl) {
-                    const teks = jabfungEl.options[jabfungEl.selectedIndex]?.text.toLowerCase() || '';
-                    warnJabfung.style.display = jabfungPimpinan.some(j => teks.includes(j)) ? 'none' : '';
-                }
-            }
-
-            function applyNonAsnRestriction() {
-                if (isNonASN()) {
-                    [dosenCb, pimpinanCb].forEach(cb => {
-                        if (!cb) return;
-                        cb.checked = false;
-                        disable(cb);
-                        cb.closest('.hak-akses-card').title = 'Non ASN tidak dapat memiliki role ini';
-                    });
-                }
-            }
-
-            function updateRoleLogic() {
-                enableAll();
-                applyNonAsnRestriction();
-
-                if (tendikCb?.checked) {
-                    disable(dosenCb);
-                    disable(pimpinanCb);
-                    if (dosenCb) dosenCb.checked = false;
-                    if (pimpinanCb) pimpinanCb.checked = false;
-                }
-                if (dosenCb?.checked) {
-                    disable(tendikCb);
-                    disable(operatorCb);
-                    if (tendikCb) tendikCb.checked = false;
-                    if (operatorCb) operatorCb.checked = false;
-                }
-                if (pimpinanCb?.checked) {
-                    disable(tendikCb);
-                    disable(operatorCb);
-                    if (tendikCb) tendikCb.checked = false;
-                    if (operatorCb) operatorCb.checked = false;
-                }
-                if (operatorCb?.checked) {
-                    if (tendikCb) {
-                        tendikCb.checked = true;
-                        disable(tendikCb);
-                    }
-                    disable(dosenCb);
-                    disable(pimpinanCb);
-                    if (dosenCb) dosenCb.checked = false;
-                    if (pimpinanCb) pimpinanCb.checked = false;
-                }
-
-                updatePimpinanWarnings();
-            }
-
-            checkboxes.forEach(cb => cb.addEventListener('change', updateRoleLogic));
-            if (statusEl) statusEl.addEventListener('change', updateRoleLogic);
-            if (pangkatEl) pangkatEl.addEventListener('change', updatePimpinanWarnings);
-            if (jabfungEl) jabfungEl.addEventListener('change', updatePimpinanWarnings);
-
-            // Aktifkan semua sebelum submit
-            document.querySelector('form').addEventListener('submit', function() {
-                checkboxes.forEach(cb => {
-                    cb.disabled = false;
-                });
-            });
-
-            updateRoleLogic();
         });
-    </script>
+    }
+
+    // =========================
+    // ELEMENT
+    // =========================
+
+    const statusEl = document.getElementById('f_status');
+
+    const tipeWrap = document.getElementById('wrap_tipe_pns');
+
+    const tipeDosen = document.getElementById('tipe_dosen');
+
+    const tipeTendik = document.getElementById('tipe_tendik');
+
+    const hintNonDosen = document.getElementById('hint_nondosen');
+
+    const pangkatEl = document.getElementById('pangkat');
+
+    const jabfungEl = document.getElementById('jabfung');
+
+    const wrapNip = document.getElementById('wrap_nip');
+
+    const wrapNidn = document.getElementById('wrap_nidn');
+
+    const wrapPangkat = document.getElementById('wrap_pangkat');
+
+    const wrapJabfung = document.getElementById('wrap_jabfung');
+
+    const warnPangkat = document.getElementById('warn_pangkat_pimpinan');
+
+    const warnJabfung = document.getElementById('warn_jabfung_pimpinan');
+
+    const checkboxes = document.querySelectorAll('input[name="roles[]"]');
+
+    // =========================
+    // SYARAT PIMPINAN
+    // =========================
+
+    const golonganPimpinan = [
+        'IV/a - Pembina',
+        'IV/b - Pembina Tingkat I',
+        'IV/c - Pembina Utama Muda',
+        'IV/d - Pembina Utama Madya',
+        'IV/e - Pembina Utama'
+    ];
+
+    const jabfungPimpinan = [
+        'lektor kepala',
+        'guru besar',
+        'profesor'
+    ];
+
+    // =========================
+    // HELPER
+    // =========================
+
+    function getCheckedRoles() {
+
+        return [...checkboxes]
+            .filter(cb => cb.checked)
+            .map(cb => cb.dataset.jenis);
+    }
+
+    function isPimpinanChecked() {
+
+        return getCheckedRoles().includes('pimpinan');
+    }
+
+    // =========================
+    // FILTER JABFUNG
+    // =========================
+
+    function filterJabfung() {
+
+        const isDosen = tipeDosen.checked;
+
+        const isTendik = tipeTendik.checked;
+
+        [...jabfungEl.options].forEach(option => {
+
+            if (!option.value) return;
+
+            const id = parseInt(option.value);
+
+            if (isDosen) {
+
+                if (id >= 1 && id <= 4) {
+
+                    option.style.display = '';
+
+                } else {
+
+                    option.style.display = 'none';
+
+                    if (jabfungEl.value == option.value) {
+
+                        jabfungEl.value = '';
+                    }
+                }
+
+            } else if (isTendik) {
+
+                if (id >= 5 && id <= 14) {
+
+                    option.style.display = '';
+
+                } else {
+
+                    option.style.display = 'none';
+
+                    if (jabfungEl.value == option.value) {
+
+                        jabfungEl.value = '';
+                    }
+                }
+
+            } else {
+
+                option.style.display = '';
+            }
+
+        });
+    }
+
+    // =========================
+    // SHOW HIDE FIELD
+    // =========================
+
+    function updateFieldVisibility() {
+
+        const status = statusEl.value;
+
+        tipeWrap.style.display = '' ;
+
+        if (status === 'PNS') {
+
+            wrapNip.style.display = '';
+
+            wrapNidn.style.display = '';
+
+            wrapPangkat.style.display = '';
+
+            wrapJabfung.style.display = '';
+
+            tipeDosen.disabled = false;
+
+            tipeTendik.disabled = false;
+
+            hintNonDosen.style.display = 'none';
+
+        }
+
+        else if (status === 'Non PNS') {
+
+            wrapNip.style.display = 'none';
+
+            wrapNidn.style.display = 'none';
+
+            wrapPangkat.style.display = 'none';
+
+            wrapJabfung.style.display = '';
+
+            tipeDosen.checked = false;
+
+            tipeDosen.disabled = true;
+
+            tipeTendik.checked = true;
+
+            tipeTendik.disabled = true;
+
+            hintNonDosen.style.display = '';
+
+            pangkatEl.value = '';
+        }
+
+        filterJabfung();
+
+        updateRoleLogic();
+
+        updatePimpinanWarnings();
+    }
+
+    // =========================
+    // VALIDASI PIMPINAN
+    // =========================
+
+    function updatePimpinanWarnings() {
+
+        if (!isPimpinanChecked()) {
+
+            warnPangkat.style.display = 'none';
+
+            warnJabfung.style.display = 'none';
+
+            return;
+        }
+
+        if (statusEl.value === 'PNS') {
+
+            const selectedOpt = pangkatEl.options[pangkatEl.selectedIndex];
+
+            const gol = selectedOpt ?
+                (selectedOpt.dataset.gol || '').trim() :
+                '';
+
+            const pangkatOk = golonganPimpinan.includes(gol);
+
+            warnPangkat.style.display = pangkatOk ?
+                'none' :
+                '';
+
+        } else {
+
+            warnPangkat.style.display = 'none';
+        }
+
+        const jabfungText = jabfungEl.options[jabfungEl.selectedIndex] ?
+            jabfungEl.options[jabfungEl.selectedIndex].text
+            .toLowerCase()
+            .trim() :
+            '';
+
+        const jabfungOk = jabfungPimpinan.some(j =>
+            jabfungText.includes(j)
+        );
+
+        warnJabfung.style.display = jabfungOk ?
+            'none' :
+            '';
+    }
+
+    // =========================
+    // ROLE LOGIC
+    // =========================
+
+    function updateRoleLogic() {
+
+        const tendikCb = [...checkboxes]
+            .find(cb => cb.dataset.jenis === 'tendik');
+
+        const dosenCb = [...checkboxes]
+            .find(cb => cb.dataset.jenis === 'dosen');
+
+        const pimpinanCb = [...checkboxes]
+            .find(cb => cb.dataset.jenis === 'pimpinan');
+
+        const operatorCb = [...checkboxes]
+            .find(cb => cb.dataset.jenis === 'operator');
+
+        checkboxes.forEach(cb => {
+
+            cb.disabled = false;
+
+            cb.closest('.hak-akses-card').style.opacity = '1';
+        });
+
+        if (statusEl.value === 'Non PNS') {
+
+            if (dosenCb) {
+
+                dosenCb.checked = false;
+
+                dosenCb.disabled = true;
+
+                dosenCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+
+            if (pimpinanCb) {
+
+                pimpinanCb.checked = false;
+
+                pimpinanCb.disabled = true;
+
+                pimpinanCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+        }
+
+        if (tendikCb && tendikCb.checked) {
+
+            if (dosenCb) {
+
+                dosenCb.checked = false;
+
+                dosenCb.disabled = true;
+
+                dosenCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+
+            if (pimpinanCb) {
+
+                pimpinanCb.checked = false;
+
+                pimpinanCb.disabled = true;
+
+                pimpinanCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+        }
+
+        if (dosenCb && dosenCb.checked) {
+
+            if (tendikCb) {
+
+                tendikCb.checked = false;
+
+                tendikCb.disabled = true;
+
+                tendikCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+
+            if (operatorCb) {
+
+                operatorCb.checked = false;
+
+                operatorCb.disabled = true;
+
+                operatorCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+        }
+
+        if (pimpinanCb && pimpinanCb.checked) {
+
+            if (tendikCb) {
+
+                tendikCb.checked = false;
+
+                tendikCb.disabled = true;
+
+                tendikCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+
+            if (operatorCb) {
+
+                operatorCb.checked = false;
+
+                operatorCb.disabled = true;
+
+                operatorCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+        }
+
+        if (operatorCb && operatorCb.checked) {
+
+            if (tendikCb) {
+
+                tendikCb.checked = true;
+
+                tendikCb.disabled = true;
+
+                tendikCb.closest('.hak-akses-card').style.opacity = '1';
+            }
+
+            if (dosenCb) {
+
+                dosenCb.checked = false;
+
+                dosenCb.disabled = true;
+
+                dosenCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+
+            if (pimpinanCb) {
+
+                pimpinanCb.checked = false;
+
+                pimpinanCb.disabled = true;
+
+                pimpinanCb.closest('.hak-akses-card').style.opacity = '.45';
+            }
+        }
+
+        updatePimpinanWarnings();
+    }
+
+    // =========================
+    // EVENT
+    // =========================
+
+    tipeDosen.addEventListener('change', filterJabfung);
+
+    tipeTendik.addEventListener('change', filterJabfung);
+
+    statusEl.addEventListener('change', updateFieldVisibility);
+
+    checkboxes.forEach(cb => {
+
+        cb.addEventListener('change', updateRoleLogic);
+    });
+
+    pangkatEl.addEventListener('change', updatePimpinanWarnings);
+
+    jabfungEl.addEventListener('change', updatePimpinanWarnings);
+
+    document.querySelector('form')
+        .addEventListener('submit', function() {
+
+            checkboxes.forEach(cb => {
+
+                cb.disabled = false;
+            });
+        });
+
+    // INIT
+    updateFieldVisibility();
+
+});
+
+</script>
 
 @endsection

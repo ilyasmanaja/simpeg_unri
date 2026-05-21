@@ -37,12 +37,12 @@
 
                         <option value="">Semua Status</option>
 
-                        <option value="ASN" {{ request('status') == 'ASN' ? 'selected' : '' }}>
-                            ASN
+                        <option value="PNS" {{ request('status') == 'PNS' ? 'selected' : '' }}>
+                            PNS
                         </option>
 
-                        <option value="Non ASN" {{ request('status') == 'Non ASN' ? 'selected' : '' }}>
-                            Non ASN
+                        <option value="Non PNS" {{ request('status') == 'Non PNS' ? 'selected' : '' }}>
+                            Non PNS
                         </option>
 
                     </select>
@@ -65,13 +65,13 @@
 
             {{-- INFO --}}
             <div class="info-text mb-2">
-  @if(request('per_page') == 'all')
-    Menampilkan semua {{ $pegawais->count() }} akun
-  @else
-    Menampilkan {{ $pegawais->firstItem() ?? 0 }} - {{ $pegawais->lastItem() ?? 0 }}
-    dari {{ $pegawais->total() }} akun
-  @endif
-</div>
+                @if (request('per_page') == 'all')
+                    Menampilkan semua {{ $pegawais->count() }} akun
+                @else
+                    Menampilkan {{ $pegawais->firstItem() ?? 0 }} - {{ $pegawais->lastItem() ?? 0 }}
+                    dari {{ $pegawais->total() }} akun
+                @endif
+            </div>
 
             {{-- TABLE --}}
             <div class="table-responsive custom-table">
@@ -167,13 +167,13 @@
 
                                 <td class="text-center">
 
-                                    @if ($pegawai->status_pegawai == 'ASN')
+                                    @if ($pegawai->status_pegawai == 'PNS')
                                         <span class="badge bg-success">
-                                            ASN
+                                            PNS
                                         </span>
                                     @else
                                         <span class="badge bg-secondary">
-                                            Non ASN
+                                            Non PNS
                                         </span>
                                     @endif
 
@@ -283,13 +283,11 @@
                     </div>
 
                     @if (request('per_page') != 'all')
-
                         <div class="pagination-wrapper">
 
                             {{ $pegawais->links() }}
 
                         </div>
-
                     @endif
 
                 </div>
@@ -325,24 +323,24 @@
     </script>
 
     @if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: @json(session('success')),
-            timer: 2000,
-            showConfirmButton: false
-        });
-    </script>
-@endif
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: @json(session('success')),
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
 
-@if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal',
-            text: @json(session('error'))
-        });
-    </script>
-@endif
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: @json(session('error'))
+            });
+        </script>
+    @endif
 @endsection

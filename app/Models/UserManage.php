@@ -31,11 +31,11 @@ class UserManage extends Authenticatable
         return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
 
-    public function roles()
+public function roles()
 {
     return $this->belongsToMany(
         Role::class,
-        'user_role',
+        'USER_ROLE',
         'id_user',
         'id_role'
     );
