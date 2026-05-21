@@ -6,15 +6,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $table = 'role';
+    protected $table = 'ROLE';
     protected $primaryKey = 'id_role';
-    public $incrementing = false;
+    public $incrementing = false; // Set false jika id di-input manual
     public $timestamps = false;
     protected $guarded = [];
+    protected $fillable = [
+        'jenis_role'
+    ];
 
     public function users()
-    {
-        // Relasi Many-to-Many ke USER_MANAGE melalui tabel pivot user_role
-        return $this->belongsToMany(UserManage::class, 'user_role', 'id_role', 'id_user');
-    }
+{
+    return $this->belongsToMany(
+        UserManage::class,
+        'user_role',
+        'id_role',
+        'id_user'
+    );
+}
+
+
 }

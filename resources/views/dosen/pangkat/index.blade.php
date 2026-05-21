@@ -208,10 +208,6 @@
                                                 class="btn btn-secondary btn-aksi">
                                                 <i class="bi bi-eye me-1"></i>Detail
                                             </button>
-                                            <a href="{{ route('dosen.pangkat-golongan.edit', $row->id_pengajuan) }}?mode=revisi"
-                                                class="btn btn-warning btn-aksi">
-                                                <i class="bi bi-arrow-repeat me-1"></i>Revisi
-                                            </a>
 
                                             {{-- Status Lainnya (Verifikasi, Persetujuan, Disetujui, Tolak Persetujuan) → Detail --}}
                                         @else

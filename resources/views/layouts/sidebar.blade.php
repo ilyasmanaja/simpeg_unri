@@ -3,12 +3,9 @@
         <h4>Sistem Informasi Kepegawaian</h4>
 
         @php
-            // Lebih aman menggunakan null-safe operator (?->) untuk mencegah error jika user null
             $user = auth()->user();
-
-            // Memanfaatkan accessor getJenisRoleAttribute() yang sudah kamu buat di model UserManage
-            $role = strtolower($user?->jenis_role ?? 'dosen');
-        @endphp
+            $role = strtolower($user?->roles()->pluck('jenis_role')->first() ?? 'dosen');
+        @endphp 
 
         {{-- ============================================================ --}}
         {{-- MENU OPERATOR --}}
@@ -19,6 +16,9 @@
 
             <a href="{{ url('/operator/data-diri') }}" class="{{ request()->is('operator/data-diri*') ? 'active' : '' }}">
                 <i class="fa-solid fa-house me-2"></i> Data Diri
+            </a>
+            <a href="{{ url('/operator/manajemen_akun') }}" class="{{ request()->is('operator/data-diri*') ? 'active' : '' }}">
+                <i class="fa-solid fa-house me-2"></i> Manajemen Akun
             </a>
 
             <div class="menu-group">
@@ -81,7 +81,7 @@
                         class="{{ request()->routeIs('pimpinan.persetujuan.jabfung') ? 'active' : '' }}">
                         <i class="bi bi-briefcase me-2"></i> Jabfung
                     </a>
-                    
+
                 </div>
             </div>
             {{-- ============================================================ --}}

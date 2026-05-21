@@ -35,3 +35,8 @@ Route::post('/verifikasi/{id}/tolak', [VerifikasiController::class, 'tolak'])->n
 Route::get('/berkas', [BerkasController::class, 'index'])->name('berkas.index');
 Route::get('/berkas/{id_berkas}', [BerkasController::class, 'show'])->name('berkas.show');
 Route::get('/berkas/{id_berkas}/download', [BerkasController::class, 'download'])->name('berkas.download');
+
+
+// ---- Manajemen Akun ----------------------------------------------
+
+Route::resource('/manajemen_akun', PegawaiController::class);

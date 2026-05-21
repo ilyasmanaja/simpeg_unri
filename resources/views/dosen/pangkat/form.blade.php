@@ -23,7 +23,7 @@
             : 'Isi data dengan lengkap dan benar sesuai dokumen resmi');
 
     $bAda = collect($berkasAda ?? []);
-    $berkasBermasalahArr = $pengajuan ? $pengajuan->berkas_bermasalah : [];
+    $berkasBermasalahArr = $berkasBermasalahArr ?? [];
 
     $pangkatSekarang = $pegawai->pangkatGolongan->jenis_pangkat ?? ($pegawai->jenis_pangkat ?? 'Belum ada pangkat');
     $namaPangkatTarget = $pengajuan ? $pengajuan->pangkatGolonganTarget->jenis_pangkat ?? '' : '';
@@ -88,13 +88,15 @@
                                 'publikasi' => 'Publikasi',
                             ];
                         @endphp
-                        <div class="ar-berkas-list mt-2">
-                            <span class="ar-label">Berkas yang harus diganti:</span>
-                            @foreach ($berkasBermasalahArr as $kb)
-                                <span class="ar-chip"><i
-                                        class="bi bi-file-earmark-pdf-fill me-1"></i>{{ $labelBerkas[$kb] ?? $kb }}</span>
-                            @endforeach
-                        </div>
+                        @if (!empty($berkasBermasalahArr))
+                            <div class="ar-berkas-list mt-2">
+                                <span class="ar-label">Berkas yang harus diganti:</span>
+                                @foreach ($berkasBermasalahArr as $kb)
+                                    <span class="ar-chip"><i
+                                            class="bi bi-file-earmark-pdf-fill me-1"></i>{{ $labelBerkas[$kb] ?? $kb }}</span>
+                                @endforeach
+                            </div>
+                        @endif
                         @if ($pengajuan->keterangan_tambahan)
                             <div class="mt-2 text-muted" style="font-size: 0.8rem;">
                                 <i>Catatan Operator: "{{ $pengajuan->keterangan_tambahan }}"</i>
@@ -180,7 +182,7 @@
                                                 @php
                                                     $oldSelected = old(
                                                         'target_panggol',
-                                                        $pengajuan ? $pengajuan-> target_panggol : null,
+                                                        $pengajuan ? $pengajuan->target_panggol : null,
                                                     );
                                                     $isSelected = $oldSelected == $p->id_panggol;
                                                 @endphp

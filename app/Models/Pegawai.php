@@ -6,67 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pegawai extends Model
 {
-    protected $table      = 'pegawai';
+    protected $table = 'PEGAWAI';
     protected $primaryKey = 'id_pegawai';
-    public    $timestamps = false;
-
+    
+    public $timestamps = false;
+    protected $guarded = [];
     protected $fillable = [
         'nama_lengkap',
-        'foto',
         'nik',
+        'nip',
+        'nidn',
         'tanggal_lahir',
         'jenis_kelamin',
         'nomor_hp',
+        'nomor_hp_darurat',
         'jurusan',
         'prodi',
-        'nomor_hp_darurat',
-        'nidn',
-        'nip',
         'status_pegawai',
+        'foto',
         'id_jabfung',
-        'id_panggol',
+        'id_panggol'
     ];
 
-    // ----------------------------------------------------------------
-    // ACCESSOR
-    // ----------------------------------------------------------------
-
-    /**
-     * Nomor identitas: NIDN untuk dosen, NIP untuk tendik.
-     * Logika: kalau nidn terisi → dosen, kalau nip terisi → tendik.
-     */
-    public function getNomorIdentitasAttribute(): string
-    {
-        if (!empty($this->nidn)) {
-            return 'NIDN: ' . $this->nidn;
-        }
-
-        if (!empty($this->nip)) {
-            return 'NIP: ' . $this->nip;
-        }
-
-        return '-';
-    }
-
-    /**
-     * Jenis pegawai berdasarkan nidn/nip.
-     */
-    public function getJenisPegawaiAttribute(): string
-    {
-        if (!empty($this->nidn)) return 'Dosen';
-        if (!empty($this->nip))  return 'Tendik';
-        return 'Tidak Diketahui';
-    }
-
-    // ----------------------------------------------------------------
-    // RELASI
-    // ----------------------------------------------------------------
-
-    public function userManage()
-    {
-        return $this->hasOne(UserManage::class, 'id_pegawai', 'id_pegawai');
-    }
-
+    // Relasi ke tabel referensi
     public function jabatanFungsional()
     {
         return $this->belongsTo(JabatanFungsional::class, 'id_jabfung', 'id_jabfung');
@@ -77,9 +39,15 @@ class Pegawai extends Model
         return $this->belongsTo(PangkatGolongan::class, 'id_panggol', 'id_panggol');
     }
 
-    public function anggota()
+    // Relasi ke tabel turunan
+    public function user()
     {
-        return $this->hasMany(Anggota::class, 'id_pegawai', 'id_pegawai');
+        return $this->hasOne(UserManage::class, 'id_pegawai', 'id_pegawai');
+    }
+
+    public function pengajuanKenaikan()
+    {
+        return $this->hasMany(PengajuanKenaikan::class, 'id_pegawai', 'id_pegawai');
     }
 
     public function berkas()
