@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Verifikasi Jabatan Fungsional')
+@section('title', 'Persetujuan Jabatan Fungsional')
 
 @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -15,8 +15,8 @@
             <div class="header-left">
                 <div class="icon-box"><i class="bi bi-person-badge-fill"></i></div>
                 <div>
-                    <h1 class="page-title">Verifikasi Jabatan Fungsional</h1>
-                    <p class="page-subtitle">Panel operator — periksa dan verifikasi pengajuan masuk</p>
+                    <h1 class="page-title">Persetujuan Jabatan Fungsional</h1>
+                    <p class="page-subtitle">Panel pimpinan — periksa dan setujui pengajuan masuk</p>
                 </div>
             </div>
         </div>
@@ -52,7 +52,7 @@
 
                 {{-- TAB ANTREAN --}}
                 <div class="tab-pane fade {{ request('tab') !== 'riwayat' ? 'show active' : '' }}" id="panel-antrean">
-                    <form method="GET" action="{{ url('operator/verifikasi/jabfung') }}" class="row g-2 mb-3">
+                    <form method="GET" action="{{ route('pimpinan.persetujuan.jabfung') }}" class="row g-2 mb-3">
                         <input type="hidden" name="tab" value="antrean">
                         <div class="col-md-8">
                             <input name="q" value="{{ request('q') }}" class="form-control"
@@ -64,69 +64,50 @@
                             </button>
                         </div>
                     </form>
-                    <div class="info-text mb-3">Menampilkan {{ $antrian->count() }} dari {{ $antrian->total() }} data
-                    </div>
+
+                    <div class="info-text mb-3">Menampilkan {{ $antrian->count() }} dari {{ $antrian->total() }} data</div>
 
                     @if ($antrian->isEmpty())
                         <div class="antrean-kosong">
                             <i class="bi bi-inbox"></i>
-                            <p>Tidak ada pengajuan yang menunggu verifikasi</p>
+                            <p>Tidak ada pengajuan yang menunggu persetujuan</p>
                         </div>
                     @else
                         <div class="antrean-list">
                             @foreach ($antrian as $item)
                                 @php
                                     $pegawai = $item->berkas->pegawai ?? null;
-                                    // 1. Ubah ->nama menjadi ->nama_lengkap
                                     $nama = $pegawai?->nama_lengkap ?? '-';
                                     $nip = $pegawai?->nip ?? '-';
                                     $nidn = $pegawai?->nidn ?? '-';
 
-                                    // Cegah error jika nama kosong
                                     $namaParts = explode(' ', $nama);
                                     $inisial = strtoupper(
                                         isset($namaParts[0][0]) ? $namaParts[0][0] . ($namaParts[1][0] ?? '') : 'U',
                                     );
 
-                                    // 2. Ambil target jabfung dari tabel pengajuan
                                     $jabfungNm = $item->berkas->pengajuan->keterangan_tambahan ?? '-';
 
                                     $tgl = $item->tanggal_pengajuan
                                         ? \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d M Y')
                                         : '-';
-                                    $status = $item->status_verifikasi;
-
-                                    // Daftar berkas yang harus dicek untuk jabfung
-                                    $daftarBerkas = [
-                                        'SK Jabatan Fungsional Terakhir',
-                                        'Ijazah Terakhir',
-                                        'SKP 2 Tahun Terakhir',
-                                        'Sertifikat Kompetensi',
-                                        'Surat Pernyataan',
-                                        'Pas Foto',
-                                    ];
                                 @endphp
+
                                 <div class="antrean-row">
                                     <div class="antrean-avatar">{{ $inisial }}</div>
                                     <div class="antrean-info">
                                         <div class="antrean-nama">{{ $nama }}</div>
-                                        <div class="antrean-meta">NIP: {{ $nip }} <span
-                                                class="chip-jabatan">{{ $jabfungNm }}</span></div>
+                                        <div class="antrean-meta">
+                                            NIP: {{ $nip }}
+                                            <span class="chip-jabatan">{{ $jabfungNm }}</span>
+                                        </div>
                                     </div>
                                     <div class="antrean-tgl"><i class="bi bi-calendar3"></i> {{ $tgl }}</div>
+
                                     <div class="aksi-cell">
-                                        @if ($status === 'Menunggu Diproses')
-                                            <form method="POST"
-                                                action="{{ url('operator/verifikasi/' . $item->id_verifikasi . '/terima') }}">
-                                                @csrf
-                                                <button type="submit" class="btn-terima"><i
-                                                        class="bi bi-check-circle-fill"></i> Terima</button>
-                                            </form>
-                                        @else
-                                            <button class="btn-periksa" onclick="bukaPanel({{ $item->id_verifikasi }})">
-                                                <i class="bi bi-file-earmark-search"></i> Periksa Berkas
-                                            </button>
-                                        @endif
+                                        <button class="btn-periksa" onclick="bukaPanel('{{ $item->id_verifikasi }}')">
+                                            <i class="bi bi-file-earmark-search"></i> Periksa Pengajuan
+                                        </button>
                                     </div>
                                 </div>
 
@@ -137,56 +118,56 @@
                                                 style="font-size:18px;color:#d32f2f;flex-shrink:0"></i>
                                             <h2 class="panel-title">{{ $nama }}</h2>
                                             <button class="btn-panel-close"
-                                                onclick="tutupPanel({{ $item->id_verifikasi }})"><i
-                                                    class="bi bi-x-lg"></i></button>
+                                                onclick="tutupPanel('{{ $item->id_verifikasi }}')"><i class="bi bi-x-lg"></i></button>
                                         </div>
+
                                         <div class="panel-body">
                                             <div class="panel-section-title">Data Pegawai</div>
                                             <div class="detail-grid">
-                                                <div class="detail-field"><span class="detail-label">Nama
-                                                        Lengkap</span><span class="detail-val">{{ $nama }}</span>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">Nama Lengkap</span>
+                                                    <span class="detail-val">{{ $nama }}</span>
                                                 </div>
-                                                <div class="detail-field"><span class="detail-label">NIP</span><span
-                                                        class="detail-val">{{ $nip }}</span></div>
-                                                <div class="detail-field"><span class="detail-label">NIDN</span><span
-                                                        class="detail-val">{{ $nidn }}</span></div>
-                                                <div class="detail-field"><span class="detail-label">Status
-                                                        Pegawai</span><span
-                                                        class="detail-val">{{ $pegawai?->status_pegawai ?? '-' }}</span>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">NIP</span>
+                                                    <span class="detail-val">{{ $nip }}</span>
+                                                </div>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">NIDN</span>
+                                                    <span class="detail-val">{{ $nidn }}</span>
+                                                </div>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">Status Pegawai</span>
+                                                    <span class="detail-val">{{ $pegawai?->status_pegawai ?? '-' }}</span>
                                                 </div>
                                             </div>
+
                                             <div class="panel-section-title">Detail Pengajuan Jabatan Fungsional</div>
                                             <div class="detail-grid">
-                                                <div class="detail-field"><span class="detail-label">Jabatan Fungsional
-                                                        Diajukan</span><span
-                                                        class="detail-val highlight">{{ $jabfungNm }}</span></div>
-                                                <div class="detail-field"><span class="detail-label">Tanggal
-                                                        Pengajuan</span><span
-                                                        class="detail-val">{{ $tgl }}</span></div>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">Jabatan Fungsional Diajukan</span>
+                                                    <span class="detail-val highlight">{{ $jabfungNm }}</span>
+                                                </div>
+                                                <div class="detail-field">
+                                                    <span class="detail-label">Tanggal Pengajuan</span>
+                                                    <span class="detail-val">{{ $tgl }}</span>
+                                                </div>
                                             </div>
+
                                             @php
-                                                // Ambil semua daftar berkas dari pengajuan yang terkait
-                                                $semuaBerkas =
-                                                    $item->berkas->pengajuan->berkas ?? collect([$item->berkas]);
+                                                $semuaBerkas = $item->berkas->pengajuan->berkas ?? collect([$item->berkas]);
                                             @endphp
 
                                             @if ($semuaBerkas->count() > 0)
                                                 <div class="panel-section-title">Berkas yang Diunggah</div>
-                                                {{-- Tambahkan flex-direction column agar berkas tersusun ke bawah --}}
-                                                <div class="berkas-list"
-                                                    style="display:flex; flex-direction:column; gap:10px;">
-
-                                                    {{-- Lakukan perulangan untuk setiap berkas --}}
+                                                <div class="berkas-list" style="display:flex; flex-direction:column; gap:10px;">
                                                     @foreach ($semuaBerkas as $file)
                                                         @if ($file && $file->file_path)
                                                             <div class="berkas-item">
-                                                                <div class="berkas-icon"><i
-                                                                        class="bi bi-file-earmark-pdf-fill"></i></div>
+                                                                <div class="berkas-icon"><i class="bi bi-file-earmark-pdf-fill"></i></div>
                                                                 <div class="berkas-detail">
-                                                                    <span
-                                                                        class="berkas-nama">{{ $file->nama_berkas ?? 'Berkas Pendukung' }}</span>
-                                                                    <span
-                                                                        class="berkas-file">{{ basename($file->file_path) }}</span>
+                                                                    <span class="berkas-nama">{{ $file->nama_berkas ?? 'Berkas Pendukung' }}</span>
+                                                                    <span class="berkas-file">{{ basename($file->file_path) }}</span>
                                                                 </div>
                                                                 <a href="{{ asset('storage/' . $file->file_path) }}"
                                                                     target="_blank" class="btn-lihat-berkas">
@@ -195,86 +176,54 @@
                                                             </div>
                                                         @endif
                                                     @endforeach
-
                                                 </div>
                                             @endif
 
                                             {{-- SEKSI TOLAK --}}
                                             <div id="tolak-{{ $item->id_verifikasi }}" style="display:none">
-                                                <div class="tolak-divider"><i class="bi bi-exclamation-triangle-fill"></i>
-                                                    Keterangan Penolakan</div>
+                                                <div class="tolak-divider">
+                                                    <i class="bi bi-exclamation-triangle-fill"></i> Keterangan Penolakan
+                                                </div>
                                                 <div class="tolak-block">
-
-                                                    {{-- Checkbox berkas bermasalah --}}
-                                                    <div class="tolak-block-header" style="margin-bottom:10px">
-                                                        <div class="tolak-block-icon"
-                                                            style="background:#f3f4f6;color:#6b7280"><i
-                                                                class="bi bi-list-check"></i></div>
-                                                        <div>
-                                                            <div class="tolak-block-title">Berkas Bermasalah <span
-                                                                    class="badge-wajib">Pilih minimal 1</span></div>
-                                                            <div class="tolak-block-sub">Tandai berkas yang tidak sesuai
-                                                                atau tidak lengkap</div>
+                                                    <div class="tolak-block-header" style="margin-bottom:10px;margin-top:16px">
+                                                        <div class="tolak-block-icon" style="background:#f3f4f6;color:#6b7280">
+                                                            <i class="bi bi-chat-left-text-fill"></i>
                                                         </div>
-                                                    </div>
-                                                    <div class="berkas-checkbox-list"
-                                                        id="berkas-list-{{ $item->id_verifikasi }}">
-                                                        @foreach ($daftarBerkas as $bk)
-                                                            <label class="berkas-checkbox-item">
-                                                                <input type="checkbox"
-                                                                    class="berkas-cb-{{ $item->id_verifikasi }}"
-                                                                    value="{{ $bk }}">
-                                                                <span>{{ $bk }}</span>
-                                                            </label>
-                                                        @endforeach
-                                                    </div>
-                                                    <p class="catatan-hint" id="hint-berkas-{{ $item->id_verifikasi }}"
-                                                        style="display:none">
-                                                        <i class="bi bi-exclamation-circle-fill"></i> Pilih minimal satu
-                                                        berkas yang bermasalah.
-                                                    </p>
-
-                                                    {{-- Catatan --}}
-                                                    <div class="tolak-block-header"
-                                                        style="margin-bottom:10px;margin-top:16px">
-                                                        <div class="tolak-block-icon"
-                                                            style="background:#f3f4f6;color:#6b7280"><i
-                                                                class="bi bi-chat-left-text-fill"></i></div>
                                                         <div>
-                                                            <div class="tolak-block-title">Catatan untuk Pegawai <span
-                                                                    class="badge-wajib">Wajib</span></div>
+                                                            <div class="tolak-block-title">
+                                                                Catatan Penolakan <span class="badge-wajib">Wajib</span>
+                                                            </div>
                                                             <div class="tolak-block-sub">Jelaskan alasan penolakan</div>
                                                         </div>
                                                     </div>
+
                                                     <textarea id="catatan-{{ $item->id_verifikasi }}" class="catatan-area"
                                                         placeholder="Contoh: Berkas tidak sesuai dengan ketentuan yang berlaku..."></textarea>
-                                                    <p class="catatan-hint" id="hint-{{ $item->id_verifikasi }}"
-                                                        style="display:none">
+                                                    <p class="catatan-hint" id="hint-{{ $item->id_verifikasi }}" style="display:none">
                                                         <i class="bi bi-exclamation-circle-fill"></i> Catatan wajib diisi.
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="panel-footer">
-                                            <form method="POST"
-                                                action="{{ url('operator/verifikasi/' . $item->id_verifikasi . '/verifikasi') }}">
+                                            {{-- SETUJU --}}
+                                            <form method="POST" action="{{ route('pimpinan.persetujuan.setuju', $item->id_verifikasi) }}">
                                                 @csrf
                                                 <button type="submit" id="btn-verif-{{ $item->id_verifikasi }}"
                                                     class="btn-verifikasi-modal">
-                                                    <i class="bi bi-check-circle-fill"></i> Verifikasi
+                                                    <i class="bi bi-check-circle-fill"></i> Setujui
                                                 </button>
                                             </form>
+
+                                            {{-- TOLAK --}}
                                             <form id="form-tolak-{{ $item->id_verifikasi }}" method="POST"
-                                                action="{{ url('operator/verifikasi/' . $item->id_verifikasi . '/tolak') }}"
+                                                action="{{ route('pimpinan.persetujuan.tolak', $item->id_verifikasi) }}"
                                                 style="display:contents">
                                                 @csrf
-                                                <input type="hidden" name="keterangan"
-                                                    id="input-catatan-{{ $item->id_verifikasi }}">
-                                                <input type="hidden" name="berkas_bermasalah"
-                                                    id="input-berkas-{{ $item->id_verifikasi }}">
+                                                <input type="hidden" name="keterangan" id="input-catatan-{{ $item->id_verifikasi }}">
                                                 <button type="button" id="btn-tolak-{{ $item->id_verifikasi }}"
-                                                    class="btn-tolak-modal"
-                                                    onclick="aksiTolak({{ $item->id_verifikasi }})">
+                                                    class="btn-tolak-modal" onclick="aksiTolak('{{ $item->id_verifikasi }}')">
                                                     <i class="bi bi-x-circle-fill"></i> Tolak
                                                 </button>
                                             </form>
@@ -283,9 +232,9 @@
                                 </div>
                             @endforeach
                         </div>
+
                         <div class="d-flex justify-content-between align-items-center mt-3">
-                            <small class="text-muted">Halaman {{ $antrian->currentPage() }} dari
-                                {{ $antrian->lastPage() }}</small>
+                            <small class="text-muted">Halaman {{ $antrian->currentPage() }} dari {{ $antrian->lastPage() }}</small>
                             {{ $antrian->appends(request()->query())->links('pagination::bootstrap-5') }}
                         </div>
                     @endif
@@ -293,7 +242,7 @@
 
                 {{-- TAB RIWAYAT --}}
                 <div class="tab-pane fade {{ request('tab') === 'riwayat' ? 'show active' : '' }}" id="panel-riwayat">
-                    <form method="GET" action="{{ url('operator/verifikasi/jabfung') }}" class="row g-2 mb-3">
+                    <form method="GET" action="{{ route('pimpinan.persetujuan.jabfung') }}" class="row g-2 mb-3">
                         <input type="hidden" name="tab" value="riwayat">
                         <div class="col-md-5">
                             <input name="qr" value="{{ request('qr') }}" class="form-control"
@@ -303,9 +252,13 @@
                             <select name="status" class="form-select">
                                 <option value="Semua" {{ request('status', 'Semua') === 'Semua' ? 'selected' : '' }}>
                                     Semua Status</option>
-                                <option value="Diteruskan" {{ request('status') === 'Diteruskan' ? 'selected' : '' }}>
-                                    Diteruskan ke Pimpinan</option>
-                                <option value="Ditolak" {{ request('status') === 'Ditolak' ? 'selected' : '' }}>Ditolak
+                                <option value="Disetujui" {{ request('status') === 'Disetujui' ? 'selected' : '' }}>
+                                    Disetujui</option>
+
+                                {{-- PERUBAHAN: samakan dengan status di DB/controller --}}
+                                <option value="Ditolak (Pimpinan)"
+                                    {{ request('status') === 'Ditolak (Pimpinan)' ? 'selected' : '' }}>
+                                    Ditolak
                                 </option>
                             </select>
                         </div>
@@ -314,8 +267,9 @@
                                 Cari</button>
                         </div>
                     </form>
-                    <div class="info-text mb-3">Menampilkan {{ $riwayat->count() }} dari {{ $riwayat->total() }} data
-                    </div>
+
+                    <div class="info-text mb-3">Menampilkan {{ $riwayat->count() }} dari {{ $riwayat->total() }} data</div>
+
                     <div class="table-responsive custom-table">
                         <table class="table data-table mb-0">
                             <thead>
@@ -326,65 +280,43 @@
                                     <th>Status</th>
                                     <th>Tgl Pengajuan</th>
                                     <th>Tgl Diproses</th>
-                                    <th>Berkas Bermasalah</th>
-                                    <th>Catatan</th>
+                                    <th>Catatan Pimpinan</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($riwayat as $i => $item)
                                     @php
                                         $pegawai = $item->berkas->pegawai ?? null;
-                                        $pengajuan = $item->berkas->pengajuan ?? null; // Ambil dari pengajuan
-                                        $berkasArr = $item->berkas_bermasalah
-                                            ? json_decode($item->berkas_bermasalah, true)
-                                            : [];
+                                        $pengajuan = $item->berkas->pengajuan ?? null;
                                     @endphp
                                     <tr>
                                         <td>{{ $riwayat->firstItem() + $i }}</td>
-                                        {{-- Ubah pemanggilan nama_lengkap --}}
                                         <td style="text-align:left">{{ $pegawai?->nama_lengkap ?? '-' }}</td>
-                                        {{-- Ubah pemanggilan target jabfung --}}
                                         <td>{{ $pengajuan?->keterangan_tambahan ?? '-' }}</td>
                                         <td>
-                                            <span
-                                                class="badge-status {{ $item->status_verifikasi === 'Diteruskan' ? 'badge-ok' : 'badge-tolak' }}">
-                                                @if ($item->status_verifikasi === 'Diteruskan')
-                                                    <i class="bi bi-send-check"></i> Diteruskan
+                                            <span class="badge-status {{ $item->status_verifikasi === 'Disetujui' ? 'badge-ok' : 'badge-tolak' }}">
+                                                @if ($item->status_verifikasi === 'Disetujui')
+                                                    <i class="bi bi-check-circle-fill"></i> Disetujui
                                                 @else
-                                                    <i class="bi bi-x-circle"></i> Ditolak
+                                                    <i class="bi bi-x-circle-fill"></i> Ditolak
                                                 @endif
                                             </span>
                                         </td>
-                                        <td>{{ $item->tanggal_pengajuan ? \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d M Y') : '-' }}
-                                        </td>
-                                        <td>{{ $item->tanggal_proses ? \Carbon\Carbon::parse($item->tanggal_proses)->translatedFormat('d M Y') : '-' }}
-                                        </td>
-                                        <td style="text-align:left;max-width:200px">
-                                            @if (!empty($berkasArr))
-                                                <div style="display:flex;flex-wrap:wrap;gap:4px">
-                                                    @foreach ($berkasArr as $b)
-                                                        <span class="chip-jabatan"
-                                                            style="font-size:.75rem;background:#fee2e2;color:#b91c1c">{{ $b }}</span>
-                                                    @endforeach
-                                                </div>
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td style="text-align:left;max-width:220px;word-break:break-word">
-                                            {{ $item->keterangan ?? '-' }}</td>
+                                        <td>{{ $item->tanggal_pengajuan ? \Carbon\Carbon::parse($item->tanggal_pengajuan)->translatedFormat('d M Y') : '-' }}</td>
+                                        <td>{{ $item->tanggal_proses ? \Carbon\Carbon::parse($item->tanggal_proses)->translatedFormat('d M Y') : '-' }}</td>
+                                        <td style="text-align:left;max-width:220px;word-break:break-word">{{ $item->keterangan ?? '-' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center py-5 text-muted">Belum ada riwayat</td>
+                                        <td colspan="7" class="text-center py-5 text-muted">Belum ada riwayat persetujuan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        <small class="text-muted">Halaman {{ $riwayat->currentPage() }} dari
-                            {{ $riwayat->lastPage() }}</small>
+                        <small class="text-muted">Halaman {{ $riwayat->currentPage() }} dari {{ $riwayat->lastPage() }}</small>
                         {{ $riwayat->appends(request()->query())->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
@@ -414,15 +346,6 @@
             const hint = document.getElementById('hint-' + id);
             if (hint) hint.style.display = 'none';
 
-            const hintBerkas = document.getElementById('hint-berkas-' + id);
-            if (hintBerkas) hintBerkas.style.display = 'none';
-
-            // Reset semua checkbox
-            document.querySelectorAll('.berkas-cb-' + id).forEach(cb => {
-                cb.checked = false;
-                cb.closest('label')?.classList.remove('berkas-checkbox-checked');
-            });
-
             const btnVerif = document.getElementById('btn-verif-' + id);
             if (btnVerif) {
                 btnVerif.disabled = false;
@@ -438,7 +361,6 @@
             const btnTolak = document.getElementById('btn-tolak-' + id);
             const btnVerif = document.getElementById('btn-verif-' + id);
 
-            // Langkah 1 — tampilkan form tolak
             if (tolakSection.style.display === 'none') {
                 tolakSection.style.display = 'block';
                 setTimeout(() => tolakSection.scrollIntoView({
@@ -453,22 +375,9 @@
                 return;
             }
 
-            // Langkah 2 — validasi checkbox
-            const checked = [...document.querySelectorAll('.berkas-cb-' + id + ':checked')].map(cb => cb.value);
-            const hintBerkas = document.getElementById('hint-berkas-' + id);
-            if (!checked.length) {
-                if (hintBerkas) hintBerkas.style.display = 'flex';
-                document.getElementById('berkas-list-' + id)?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-                return;
-            }
-            if (hintBerkas) hintBerkas.style.display = 'none';
-
-            // Langkah 2 — validasi catatan
             const catatan = document.getElementById('catatan-' + id).value.trim();
             const hint = document.getElementById('hint-' + id);
+
             if (!catatan) {
                 const ta = document.getElementById('catatan-' + id);
                 ta.classList.add('catatan-error');
@@ -477,24 +386,14 @@
                 return;
             }
 
-            // Isi hidden input lalu submit
             document.getElementById('input-catatan-' + id).value = catatan;
-            document.getElementById('input-berkas-' + id).value = JSON.stringify(checked);
             document.getElementById('form-tolak-' + id).submit();
         }
 
-        // Tutup panel klik backdrop
         document.querySelectorAll('.detail-overlay').forEach(el => {
             el.addEventListener('click', function(e) {
                 if (e.target === this) tutupPanel(this.id.replace('overlay-', ''));
             });
-        });
-
-        // Visual aktif checkbox
-        document.addEventListener('change', function(e) {
-            if (e.target.type === 'checkbox' && e.target.closest('.berkas-checkbox-list')) {
-                e.target.closest('label').classList.toggle('berkas-checkbox-checked', e.target.checked);
-            }
         });
     </script>
 @endpush

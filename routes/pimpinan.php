@@ -32,5 +32,5 @@ Route::get('/persetujuan/jabfung', [PersetujuanController::class, 'jabfung'])->n
 Route::get('/persetujuan/panggol', [PersetujuanController::class, 'panggol'])->name('persetujuan.panggol');
 
 // ---- Aksi Persetujuan (POST untuk update status) ------------------
-Route::post('/persetujuan/{id}/setuju', [PersetujuanController::class, 'setuju'])->name('persetujuan.setuju');
+Route::post('/persetujuan/{id}/setuju', [PersetujuanController::class, 'setujui'])->name('persetujuan.setuju');
 Route::post('/persetujuan/{id}/tolak', [PersetujuanController::class, 'tolak'])->name('persetujuan.tolak');

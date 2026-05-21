@@ -3,47 +3,51 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dosen\JabatanFungsionalController;
 use App\Http\Controllers\Dosen\PangkatController;
+use App\Http\Controllers\Dosen\SuratTugasController; // Pastikan Controller ini ada di folder Dosen
 use App\Http\Controllers\PegawaiController; 
 
-// URL Otomatis: /dosen/data-diri
-// Nama Rute Otomatis: dosen.datadiri.index
+// ==========================================
+// MODULE: DATA DIRI
+// ==========================================
 Route::prefix('data-diri')->group(function () {
-    // 1. Menampilkan halaman utama (memanggil index.blade.php)
     Route::get('/', [PegawaiController::class, 'index'])->name('datadiri.index');
-    
-    // 2. Menampilkan form tambah data (memanggil create.blade.php)
     Route::get('/create', [PegawaiController::class, 'create'])->name('pegawai.create');
-    // Memproses data yang ditambahkan
     Route::post('/', [PegawaiController::class, 'store'])->name('pegawai.store'); 
-    
-    // 3. Menampilkan form edit (memanggil update.blade.php)
     Route::get('/{id}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
-    // Memproses data yang diupdate
     Route::put('/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
 });
 
-// URL Otomatis: /dosen/pegawai/*
-// Nama Rute Otomatis: dosen.pegawai.password.form
 Route::prefix('pegawai')->group(function () {
     Route::get('/{id}/password', [PegawaiController::class, 'passwordForm'])->name('pegawai.password.form');
     Route::put('/{id}/password', [PegawaiController::class, 'passwordUpdate'])->name('pegawai.password.update');
 });
 
+// ==========================================
+// MODULE: SURAT TUGAS
+// ==========================================
+Route::prefix('surat')->name('surat.')->group(function () {
+    Route::get('/', [SuratTugasController::class, 'index'])->name('index');
+    Route::get('/create', [SuratTugasController::class, 'create'])->name('create');
+    Route::post('/store', [SuratTugasController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [SuratTugasController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [SuratTugasController::class, 'update'])->name('update');
+    Route::get('/ajukan-kembali/{id}', [SuratTugasController::class, 'ajukanKembali'])->name('ajukanKembali');
+    Route::post('/ajukan-kembali/{id}', [SuratTugasController::class, 'prosesAjukanKembali'])->name('prosesAjukanKembali');
+    Route::get('/hapus/{id}', [SuratTugasController::class, 'destroy'])->name('destroy');
+    Route::get('/download/{id}', [SuratTugasController::class, 'downloadPdf'])->name('downloadPdf');
+});
+
+// Berkas tetap di luar atau prefix khusus jika perlu
+Route::get('/berkas/{filename}', [SuratTugasController::class, 'viewBerkas'])->name('berkas.view');
 
 // ==========================================
 // MODULE: PANGKAT GOLONGAN
 // ==========================================
-// URL Otomatis: /dosen/pangkat-golongan
-// Nama Rute Otomatis: dosen.pangkat-golongan.index, dosen.pangkat-golongan.create, dll.
-// Cukup lepas array kustomnya, biarkan Laravel yang mengurus penamaannya secara otomatis.
 Route::resource('pangkat-golongan', PangkatController::class);
-
 
 // ==========================================
 // MODULE: JABATAN FUNGSIONAL
 // ==========================================
-// URL Otomatis: /dosen/jabatanfungsional
-// Nama Rute Otomatis: dosen.jabatanfungsional.index, dosen.jabatanfungsional.create, dll.
 Route::prefix('jabatanfungsional')->name('jabatanfungsional.')->group(function () {
     Route::get('/',             [JabatanFungsionalController::class, 'index'])->name('index');
     Route::get('/create',       [JabatanFungsionalController::class, 'create'])->name('create');

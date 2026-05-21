@@ -4,27 +4,27 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration
+{
     public function up(): void
     {
-        Schema::create('ANGGOTA', function (Blueprint $table) {
-            $table->id('id_anggota');
-            $table->string('jenis_anggota', 255)->nullable();
-            $table->string('nama_anggota', 255)->nullable();
-            $table->foreignId('id_surat_tugas')->nullable();
-            $table->foreignId('id_pegawai')->nullable();
+        Schema::create('anggota', function (Blueprint $table) {
 
-            $table->foreign('id_surat_tugas')->references('id_surat_tugas')->on('SURAT_TUGAS')->onDelete('cascade');
-            $table->foreign('id_pegawai')->references('id_pegawai')->on('PEGAWAI')->onDelete('cascade');
+            $table->id('id_anggota');
+
+            $table->string('nama_anggota')->nullable();
+
+            $table->unsignedBigInteger('id_surat_tugas');
+
+            $table->integer('id_pegawai')->nullable();
+
+            $table->foreign('id_surat_tugas')
+                  ->references('id_surat_tugas')
+                  ->on('surat_tugas')
+                  ->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('anggota');

@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('PANGKAT_GOLONGAN', function (Blueprint $table) {
             $table->id('id_panggol');
-            $table->string('jenis_pangkat', 255);
+            $table->string('jenis_pangkat', 255); //contoh: I/a - Juru Muda
         });
     }
 
