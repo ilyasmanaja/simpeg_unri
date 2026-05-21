@@ -112,6 +112,43 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Summary Box --}}
+        <div class="summary-box">
+            <div class="summary-item">
+                <div class="icon blue">📋</div>
+                <div>
+                    <small>Total Pengajuan</small>
+                    <h4>{{ $surat->count() }} Surat</h4>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="summary-item">
+                <div class="icon green">✅</div>
+                <div>
+                    <small>Disetujui</small>
+                    <h4>{{ $surat->where('status', 'disetujui')->count() }} Surat</h4>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="summary-item">
+                <div class="icon purple">🕐</div>
+                <div>
+                    <small>Total Hari</small>
+                    <h4>{{ $surat->sum('lama_pelaksanaan') }} Hari</h4>
+                </div>
+            </div>
+        </div>
+
+        {{-- Info Box --}}
+        <div class="info-box">
+            ℹ️ Semua surat tugas menunggu verifikasi dari operator dan disetujui oleh pimpinan.
+        </div>
+
     </div>
 </div>
 @endsection

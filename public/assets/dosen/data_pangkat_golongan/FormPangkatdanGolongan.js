@@ -2,10 +2,10 @@
 // JABFUNG TO PANGKAT MAPPING
 // ══════════════════════════════════════
 const jabfungToPangkat = {
-    'Asisten Ahli':  { min: 6,  max: 6,  label: 'III/b' },
-    'Lektor':        { min: 7,  max: 8,  label: 'III/c – III/d' },
-    'Lektor Kepala': { min: 9,  max: 10, label: 'IV/a – IV/b' },
-    'Guru Besar':    { min: 11, max: 13, label: 'IV/c – IV/e' },
+    'Asisten Ahli': { min: 6, max: 6, label: 'III/b' },
+    'Lektor': { min: 7, max: 8, label: 'III/c – III/d' },
+    'Lektor Kepala': { min: 9, max: 10, label: 'IV/a – IV/b' },
+    'Guru Besar': { min: 11, max: 13, label: 'IV/c – IV/e' },
 };
 
 // ══════════════════════════════════════
@@ -13,7 +13,12 @@ const jabfungToPangkat = {
 // ══════════════════════════════════════
 function validateFile(inputId, errId, maxMB, required = false) {
     const input = document.getElementById(inputId);
-    const err   = document.getElementById(errId);
+    const err = document.getElementById(errId);
+
+    if (!input) {
+        return true;
+    }
+
     if (!input.files.length) {
         if (required) {
             err.textContent = 'File ini wajib diupload.';
@@ -55,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cek konflik jabfung saat pilih pangkat
     document.getElementById('selectPangkat').addEventListener('change', function () {
         const alertEl = document.getElementById('jabfung-alert');
-        const msgEl   = document.getElementById('jabfung-alert-msg');
-        const urutan  = parseInt(this.options[this.selectedIndex].dataset.urutan || '0');
+        const msgEl = document.getElementById('jabfung-alert-msg');
+        const urutan = parseInt(this.options[this.selectedIndex].dataset.urutan || '0');
 
         if (!jabfungSekarang || !urutan) {
             alertEl.classList.add('d-none');
@@ -82,12 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
 // SUBMIT FORM AJUKAN
 // ══════════════════════════════════════
 function submitForm(action) {
-    const pangkat     = document.getElementById('selectPangkat').value;
+    const pangkat = document.getElementById('selectPangkat').value;
     const nomorUsulan = document.querySelector('[name="nomor_usulan"]').value.trim();
 
-    const v1 = validateFile('file-sk-cpns',   'err-sk-cpns',   5,  action === 'ajukan');
-    const v2 = validateFile('file-sk-pns',    'err-sk-pns',    5,  action === 'ajukan');
-    const v3 = validateFile('file-pak',       'err-pak',       5,  action === 'ajukan');
+    const v1 = validateFile('file-sk-cpns', 'err-sk-cpns', 5, action === 'ajukan');
+    const v2 = validateFile('file-sk-pns', 'err-sk-pns', 5, action === 'ajukan');
+    const v3 = validateFile('file-pak', 'err-pak', 5, action === 'ajukan');
     const v4 = validateFile('file-publikasi', 'err-publikasi', 10, false);
 
     if (!v1 || !v2 || !v3 || !v4) {
@@ -122,8 +127,8 @@ function submitForm(action) {
     }
 
     if (action === 'ajukan' && jabfungSekarang && pangkat) {
-        const urutan     = parseInt(document.querySelector('#selectPangkat option:checked').dataset.urutan || '0');
-        const info       = jabfungToPangkat[jabfungSekarang];
+        const urutan = parseInt(document.querySelector('#selectPangkat option:checked').dataset.urutan || '0');
+        const info = jabfungToPangkat[jabfungSekarang];
         const adaKonflik = info && (urutan < info.min || urutan > info.max);
 
         if (adaKonflik) {
@@ -167,7 +172,15 @@ function submitForm(action) {
 }
 
 function doSubmit(action) {
-    document.getElementById('form-action').value = action;
+    // 1. Cari elemennya terlebih dahulu
+    const actionInput = document.getElementById('form-action');
+
+    // 2. Cek apakah elemennya ada. Jika ada, baru isi valuenya
+    if (actionInput) {
+        actionInput.value = action;
+    }
+
+    // 3. Lanjutkan proses submit form
     document.getElementById('formPanggol').submit();
 }
 
@@ -176,7 +189,7 @@ function doSubmit(action) {
 // ══════════════════════════════════════
 function validateFileEdit(inputId, errId, maxMB) {
     const input = document.getElementById(inputId);
-    const err   = document.getElementById(errId);
+    const err = document.getElementById(errId);
     if (!input || !input.files.length) { err.style.display = 'none'; return true; }
     const file = input.files[0];
     if (file.type !== 'application/pdf') {
@@ -201,8 +214,8 @@ function initEditForm() {
 
     document.getElementById('selectPangkat')?.addEventListener('change', function () {
         const alertEl = document.getElementById('jabfung-alert');
-        const msgEl   = document.getElementById('jabfung-alert-msg');
-        const urutan  = parseInt(this.options[this.selectedIndex]?.dataset.urutan || '0');
+        const msgEl = document.getElementById('jabfung-alert-msg');
+        const urutan = parseInt(this.options[this.selectedIndex]?.dataset.urutan || '0');
         if (!jabfungSekarang || !urutan) { alertEl.style.display = 'none'; return; }
         const info = jabfungToPangkat[jabfungSekarang];
         if (!info) { alertEl.style.display = 'none'; return; }
@@ -218,9 +231,9 @@ function initEditForm() {
 }
 
 function submitFormEdit() {
-    const v1 = validateFileEdit('file-sk_cpns',   'err-sk_cpns',   5);
-    const v2 = validateFileEdit('file-sk_pns',    'err-sk_pns',    5);
-    const v3 = validateFileEdit('file-pak',       'err-pak',       5);
+    const v1 = validateFileEdit('file-sk_cpns', 'err-sk_cpns', 5);
+    const v2 = validateFileEdit('file-sk_pns', 'err-sk_pns', 5);
+    const v3 = validateFileEdit('file-pak', 'err-pak', 5);
     const v4 = validateFileEdit('file-publikasi', 'err-publikasi', 10);
 
     if (!v1 || !v2 || !v3 || !v4) {
@@ -233,8 +246,8 @@ function submitFormEdit() {
         return;
     }
 
-    const urutan  = parseInt(document.querySelector('#selectPangkat option:checked')?.dataset.urutan || '0');
-    const info    = jabfungSekarang ? jabfungToPangkat[jabfungSekarang] : null;
+    const urutan = parseInt(document.querySelector('#selectPangkat option:checked')?.dataset.urutan || '0');
+    const info = jabfungSekarang ? jabfungToPangkat[jabfungSekarang] : null;
     const konflik = info && (urutan < info.min || urutan > info.max);
 
     const doKonfirmasi = () => {

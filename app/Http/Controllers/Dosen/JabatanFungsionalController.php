@@ -9,6 +9,8 @@ use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Verifikasi;
+use Carbon\Carbon;
 
 class JabatanFungsionalController extends Controller
 {
@@ -190,6 +192,19 @@ class JabatanFungsionalController extends Controller
             ]);
 
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai);
+
+            $berkasUtama = \App\Models\Berkas::where('id_pengajuan', $pengajuan->id_pengajuan)->first();
+
+            if ($berkasUtama) {
+                Verifikasi::create([
+                    'id_berkas' => $berkasUtama->id_berkas,
+                    'jenis_verifikasi' => Verifikasi::JENIS_JABFUNG, // Pastikan konstanta ini ada di model
+                    'status_verifikasi' => 'Menunggu Diproses',
+                    'tanggal_pengajuan' => Carbon::today(),
+                    'tanggal_proses' => null,
+                    'keterangan' => '-',
+                ]);
+            }
 
             DB::commit();
             return redirect()->route('dosen.jabatanfungsional.index')->with('success', 'sukses');

@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Berkas;
+use App\Models\PangkatGolongan;
 
 class PengajuanKenaikan extends Model
 {
-    protected $table      = 'PENGAJUAN_KENAIKAN';
+    protected $table = 'PENGAJUAN_KENAIKAN';
     protected $primaryKey = 'id_pengajuan';
-    public    $incrementing = true;
-    public    $timestamps   = false;
+    public $incrementing = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_pegawai',
@@ -47,35 +48,35 @@ class PengajuanKenaikan extends Model
     public function getStatusInfoAttribute(): array
     {
         $map = [
-            'menunggu'           => [
+            'menunggu' => [
                 'label' => 'Menunggu Diproses',
                 'class' => 'badge-menunggu',
-                'icon'  => 'bi-hourglass-split',
+                'icon' => 'bi-hourglass-split',
             ],
-            'verifikasi'         => [
+            'verifikasi' => [
                 'label' => 'Sedang Diverifikasi',
                 'class' => 'badge-verifikasi',
-                'icon'  => 'bi-search',
+                'icon' => 'bi-search',
             ],
-            'persetujuan'        => [
+            'persetujuan' => [
                 'label' => 'Menunggu Persetujuan',
                 'class' => 'badge-persetujuan',
-                'icon'  => 'bi-clock-history',
+                'icon' => 'bi-clock-history',
             ],
-            'disetujui'          => [
+            'disetujui' => [
                 'label' => 'Disetujui',
                 'class' => 'badge-disetujui',
-                'icon'  => 'bi-check-circle-fill',
+                'icon' => 'bi-check-circle-fill',
             ],
-            'tolak_verifikasi'   => [
+            'tolak_verifikasi' => [
                 'label' => 'Ditolak (Verifikasi)',
                 'class' => 'badge-ditolak',
-                'icon'  => 'bi-x-circle-fill',
+                'icon' => 'bi-x-circle-fill',
             ],
-            'tolak_persetujuan'  => [
+            'tolak_persetujuan' => [
                 'label' => 'Ditolak (Persetujuan)',
                 'class' => 'badge-ditolak',
-                'icon'  => 'bi-x-circle-fill',
+                'icon' => 'bi-x-circle-fill',
             ],
         ];
 
@@ -99,5 +100,13 @@ class PengajuanKenaikan extends Model
             'id_pengajuan',    // Primary key di tabel ini (pengajuan_kenaikan)
             'id_berkas'        // Primary key di tabel perantara (berkas)
         );
+    }
+
+    public function pangkatGolongan()
+    {
+        // Jika tabel pengajuan merujuk ke tabel pangkat_golongan, 
+        // gunakan belongsTo. 
+        // Sesuaikan 'id_panggol_target' dengan nama kolom foreign key di databasemu.
+        return $this->belongsTo(PangkatGolongan::class, 'target_panggol', 'id_panggol');
     }
 }

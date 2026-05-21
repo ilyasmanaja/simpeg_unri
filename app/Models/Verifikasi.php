@@ -8,8 +8,8 @@ class Verifikasi extends Model
 {
     protected $table      = 'VERIFIKASI';
     protected $primaryKey = 'id_verifikasi';
-    public    $incrementing = false;
-    protected $keyType    = 'string';
+    public    $incrementing = true;
+    protected $keyType    = 'int';
     public    $timestamps = false;
 
     protected $fillable = [
@@ -43,14 +43,14 @@ class Verifikasi extends Model
 
     // ── Helper: generate PK unik ────────────────────────────
 
-    public static function generateId(string $jenis): string
-    {
-        $prefix = match ($jenis) {
-            self::JENIS_JABFUNG     => 'VRF-JF',
-            self::JENIS_PANGKAT     => 'VRF-PG',
-            self::JENIS_SURAT_TUGAS => 'VRF-ST',
-            default                 => 'VRF',
-        };
-        return $prefix . '-' . now()->format('YmdHis') . '-' . rand(100, 999);
-    }
+    // public static function generateId(string $jenis): string
+    // {
+    //     $prefix = match ($jenis) {
+    //         self::JENIS_JABFUNG     => 'VRF-JF',
+    //         self::JENIS_PANGKAT     => 'VRF-PG',
+    //         self::JENIS_SURAT_TUGAS => 'VRF-ST',
+    //         default                 => 'VRF',
+    //     };
+    //     return $prefix . '-' . now()->format('YmdHis') . '-' . rand(100, 999);
+    // }
 }

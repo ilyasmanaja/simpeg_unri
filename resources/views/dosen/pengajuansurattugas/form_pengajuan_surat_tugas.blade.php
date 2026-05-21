@@ -40,6 +40,16 @@
                     $readonlyField = $isDitolakOperator ? 'readonly' : '';
                     $berkasAktif = isset($surat) ? $surat->berkasAktif : null;
                     $nomorIdentitas = $pegawai?->nomor_identitas ?? '-';
+
+                    // 1. PENENTUAN RUTE ACTION UNTUK FORM
+                    $formAction = route('dosen.surat.store'); // Default: Create
+                    if (isset($surat)) {
+                        if ($isDitolak) {
+                            $formAction = route('dosen.surat.prosesAjukanKembali', $surat->id_surat_tugas);
+                        } else {
+                            $formAction = route('dosen.surat.update', $surat->id_surat_tugas);
+                        }
+                    }
                 @endphp
 
                 @if (isset($surat) && $isDitolak)
@@ -66,9 +76,8 @@
                     </div>
                 @endif
 
-                <form id="formSurat" method="POST"
-                    action="{{ isset($surat) ? ($isDitolak ? route('surat.prosesAjukanKembali', $surat->id_surat_tugas) : url('/update/' . $surat->id_surat_tugas)) : route('dosen.surat.store') }}"
-                    enctype="multipart/form-data">
+                {{-- 2. PENERAPAN RUTE PADA ACTION FORM --}}
+                <form id="formSurat" method="POST" action="{{ $formAction }}" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Pengusul --}}
@@ -114,7 +123,7 @@
                         <div class="col-md-8">
                             <input type="date" name="waktu_pelaksanaan" class="form-control custom-input"
                                 value="{{ isset($surat) ? \Carbon\Carbon::parse($surat->waktu_pelaksanaan)->format('Y-m-d') : '' }}"
-                                required>
+                                min="{{ date('Y-m-d') }}" required>
                         </div>
                     </div>
 
@@ -142,7 +151,8 @@
                         <div class="col-md-8">
                             @if (isset($surat) && $surat->berkasAktif)
                                 <div class="mb-2 p-2 bg-light rounded" style="font-size: 12px;">
-                                    📄 File saat ini: <a href="{{ route('dosen.berkas.view', $surat->berkasAktif->id_berkas) }}"
+                                    📄 File saat ini: <a
+                                        href="{{ route('dosen.berkas.view', $surat->berkasAktif->id_berkas) }}"
                                         target="_blank">
                                         {{ $surat->berkasAktif->nama_berkas }}
                                     </a>
@@ -156,10 +166,13 @@
 
                     <hr>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-ajukan px-4">
-                            {{ isset($surat) && $isDitolak ? 'Ajukan Kembali' : (isset($surat) ? 'Perbarui' : 'Ajukan') }}
+                        {{-- 3. PERBAIKAN TOMBOL SUBMIT (Sebelumnya <a>, sekarang <button type="submit">) --}}
+                        <button type="submit" name="submit" class="btn btn-ajukan px-4">
+                            {{ isset($surat) ? ($isDitolak ? 'Ajukan Kembali' : 'Perbarui') : 'Ajukan' }}
                         </button>
-                        <a href="{{ route('dosen.surat.index') }}" class="btn btn-secondary px-4">Batal</a>
+                        
+                        {{-- Tombol Batal --}}
+                        <a href="{{ route('dosen.surat.index') }}" class="btn btn-secondary px-4" id="btnBatal">Batal</a>
                     </div>
                 </form>
             </div>

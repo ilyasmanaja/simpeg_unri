@@ -31,12 +31,13 @@
                     <a href="{{ url('/operator/verifikasi/surat-tugas') }}"
                         class="{{ request()->is('operator/verifikasi/surat-tugas*') ? 'active' : '' }}"><i
                             class="bi bi-file-earmark-text me-2"></i> Surat Tugas</a>
-                    <a href="{{ url('/operator/verifikasi/jabfung') }}"
-                        class="{{ request()->is('operator/verifikasi/jabfung*') ? 'active' : '' }}"><i
-                            class="bi bi-briefcase me-2"></i> Jabfung</a>
                     <a href="{{ url('/operator/verifikasi/panggol') }}"
                         class="{{ request()->is('operator/verifikasi/panggol*') ? 'active' : '' }}"><i
                             class="bi bi-award me-2"></i> Pangkat</a>
+                    <a href="{{ url('/operator/verifikasi/jabfung') }}"
+                        class="{{ request()->is('operator/verifikasi/jabfung*') ? 'active' : '' }}"><i
+                            class="bi bi-briefcase me-2"></i> Jabfung</a>
+
                 </div>
             </div>
 
@@ -44,36 +45,45 @@
             {{-- MENU PIMPINAN --}}
             {{-- ============================================================ --}}
         @elseif($role === 'pimpinan')
-            <div class="menu-section px-3 py-2 text-uppercase fw-bold" style="font-size: 0.7rem; opacity: 0.6;">Menu
-                Pimpinan</div>
-
-            <a href="{{ url('/pimpinan/dashboard') }}"
-                class="{{ request()->is('pimpinan/dashboard*') ? 'active' : '' }}">
-                <i class="fa-solid fa-house me-2"></i> Dashboard
-            </a>
-            <a href="{{ url('/pimpinan/data-diri') }}"
-                class="{{ request()->is('pimpinan/data-diri*') ? 'active' : '' }}"><i
-                    class="bi bi-person-badge me-2"></i> Data Diri</a>
-
-            <div class="menu-group">
-                <div class="menu-group-label {{ request()->is('pimpinan/persetujuan*') ? 'active' : '' }}"
-                    onclick="toggleSubMenu(this)">
-                    <i class="bi bi-patch-check-fill me-2"></i> Persetujuan <i
-                        class="bi bi-chevron-down ms-auto toggle-icon"></i>
-                </div>
-                <div class="sub-menu {{ request()->is('pimpinan/persetujuan*') ? 'open' : '' }}">
-                    <a href="{{ url('/pimpinan/persetujuan/surat-tugas') }}"
-                        class="{{ request()->is('pimpinan/persetujuan/surat-tugas*') ? 'active' : '' }}"><i
-                            class="bi bi-file-earmark-text me-2"></i> Surat Tugas</a>
-                    <a href="{{ url('/pimpinan/persetujuan/jabfung') }}"
-                        class="{{ request()->is('pimpinan/persetujuan/jabfung*') ? 'active' : '' }}"><i
-                            class="bi bi-briefcase me-2"></i> Jabfung</a>
-                    <a href="{{ url('/pimpinan/persetujuan/panggol') }}"
-                        class="{{ request()->is('pimpinan/persetujuan/panggol*') ? 'active' : '' }}"><i
-                            class="bi bi-award me-2"></i> Pangkat</a>
-                </div>
+            <div class="menu-section px-3 py-2 text-uppercase fw-bold" style="font-size: 0.7rem; opacity: 0.6;">
+                Menu Pimpinan
             </div>
 
+            {{-- Dashboard --}}
+            <a href="{{ route('pimpinan.dashboard') }}"
+                class="{{ request()->routeIs('pimpinan.dashboard') ? 'active' : '' }}">
+                <i class="fa-solid fa-house me-2"></i> Dashboard
+            </a>
+
+            {{-- Data Diri --}}
+            <a href="{{ route('pimpinan.datadiri.index') }}"
+                class="{{ request()->routeIs('pimpinan.datadiri.*', 'pimpinan.pegawai.*') ? 'active' : '' }}">
+                <i class="bi bi-person-badge me-2"></i> Data Diri
+            </a>
+
+            {{-- Persetujuan (Dropdown) --}}
+            <div class="menu-group">
+                <div class="menu-group-label {{ request()->routeIs('pimpinan.persetujuan.*') ? 'active' : '' }}"
+                    onclick="toggleSubMenu(this)">
+                    <i class="bi bi-patch-check-fill me-2"></i> Persetujuan
+                    <i class="bi bi-chevron-down ms-auto toggle-icon"></i>
+                </div>
+                <div class="sub-menu {{ request()->routeIs('pimpinan.persetujuan.*') ? 'open' : '' }}">
+                    <a href="{{ route('pimpinan.persetujuan.surat-tugas') }}"
+                        class="{{ request()->routeIs('pimpinan.persetujuan.surat-tugas') ? 'active' : '' }}">
+                        <i class="bi bi-file-earmark-text me-2"></i> Surat Tugas
+                    </a>
+                    <a href="{{ route('pimpinan.persetujuan.panggol') }}"
+                        class="{{ request()->routeIs('pimpinan.persetujuan.panggol') ? 'active' : '' }}">
+                        <i class="bi bi-award me-2"></i> Pangkat
+                    </a>
+                    <a href="{{ route('pimpinan.persetujuan.jabfung') }}"
+                        class="{{ request()->routeIs('pimpinan.persetujuan.jabfung') ? 'active' : '' }}">
+                        <i class="bi bi-briefcase me-2"></i> Jabfung
+                    </a>
+                    
+                </div>
+            </div>
             {{-- ============================================================ --}}
             {{-- MENU DOSEN --}}
             {{-- ============================================================ --}}
@@ -97,11 +107,6 @@
 
     {{-- Footer Sidebar --}}
     <div class="mt-auto mb-3">
-        <a href="{{ url('/' . $role . '/data-diri') }}">
-            <img src="{{ asset('assets/dosen/data_diri/pfp.jpg') }}" alt="Profile"
-                style="width:20px; border-radius:50%; margin-right:8px;"> Profil
-        </a>
-
         <a href="{{ route('logout') }}" class="keluar">
             <i class="bi bi-box-arrow-left me-2"></i> Keluar
         </a>

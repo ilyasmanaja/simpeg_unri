@@ -10,6 +10,8 @@ use App\Models\Berkas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Verifikasi;
+use Carbon\Carbon;
 
 class PangkatController extends Controller
 {
@@ -17,10 +19,23 @@ class PangkatController extends Controller
     // Helper: urutanMap
     // ══════════════════════════════════════
     private $urutanMap = [
-        'I/a'=>1,'I/b'=>2,'I/c'=>3,'I/d'=>4,
-        'II/a'=>5,'II/b'=>6,'II/c'=>7,'II/d'=>8,
-        'III/a'=>9,'III/b'=>10,'III/c'=>11,'III/d'=>12,
-        'IV/a'=>13,'IV/b'=>14,'IV/c'=>15,'IV/d'=>16,'IV/e'=>17
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        4 => 4,
+        5 => 5,
+        6 => 6,
+        7 => 7,
+        8 => 8,
+        9 => 9,
+        10 => 10,
+        11 => 11,
+        12 => 12,
+        13 => 13,
+        14 => 14,
+        15 => 15,
+        16 => 16,
+        17 => 17
     ];
 
     // ══════════════════════════════════════
@@ -28,30 +43,40 @@ class PangkatController extends Controller
     // ══════════════════════════════════════
     private function getPegawai(): Pegawai
     {
-        // Sementara di-hardcode 5 sampai fitur Login/Auth berjalan
         $idPegawai = session('id_pegawai', 1);
         return Pegawai::with(['pangkatGolongan', 'jabatanFungsional'])->findOrFail($idPegawai);
+    }
+
+    private function getJenis(Pegawai $pegawai): string
+    {
+        return $pegawai->nidn ? 'dosen' : 'tendik';
+    }
+
+    private function getUrutanDosen(?string $namaJabfung): int
+    {
+        return (int) array_search($namaJabfung, self::JABFUNG_DOSEN);
     }
 
     // ══════════════════════════════════════
     // Helper: Upload Berkas
     // ══════════════════════════════════════
-    private function uploadBerkas(Request $request, PengajuanKenaikan $pengajuan, $idPegawai, $berkasAda = null): void 
+    private function uploadBerkas(Request $request, PengajuanKenaikan $pengajuan, $idPegawai, $berkasAda = null): void
     {
         $berkasConfig = [
-            'sk_cpns'   => ['label' => 'SK CPNS'],
-            'sk_pns'    => ['label' => 'SK PNS'],
-            'pak'       => ['label' => 'PAK'],
+            'sk_cpns' => ['label' => 'SK CPNS'],
+            'sk_pns' => ['label' => 'SK PNS'],
+            'pak' => ['label' => 'PAK'],
             'publikasi' => ['label' => 'Publikasi'],
         ];
 
         foreach ($berkasConfig as $key => $cfg) {
-            if (!$request->hasFile($key)) continue;
+            if (!$request->hasFile($key))
+                continue;
 
-            $file     = $request->file($key);
+            $file = $request->file($key);
             $namaFile = $key . '_' . $idPegawai . '_' . time() . '.pdf';
             // Simpan file ke folder storage public
-            $path     = $file->storeAs("uploads/pangkat/{$pengajuan->id_pengajuan}", $namaFile, 'public');
+            $path = $file->storeAs("uploads/pangkat/{$pengajuan->id_pengajuan}", $namaFile, 'public');
 
             if ($berkasAda && $berkasAda->has($key)) {
                 // Update berkas yang sudah ada
@@ -60,18 +85,18 @@ class PangkatController extends Controller
                     Storage::disk('public')->delete($lama->file_path);
                 }
                 $lama->update([
-                    'nama_berkas'  => $cfg['label'],
-                    'file_path'    => $path,
+                    'nama_berkas' => $cfg['label'],
+                    'file_path' => $path,
                 ]);
             } else {
                 // Buat data berkas baru
                 Berkas::create([
-                    'id_berkas'    => 'BRK-' . time() . '-' . strtoupper($key),
+                    'id_berkas' => 'BRK-' . time() . '-' . strtoupper($key),
                     'id_pengajuan' => $pengajuan->id_pengajuan,
-                    'id_pegawai'   => $idPegawai,
+                    'id_pegawai' => $idPegawai,
                     'jenis_berkas' => $key,
-                    'nama_berkas'  => $cfg['label'],
-                    'file_path'    => $path,
+                    'nama_berkas' => $cfg['label'],
+                    'file_path' => $path,
                 ]);
             }
         }
@@ -108,49 +133,57 @@ class PangkatController extends Controller
 
         if (strtolower($pegawai->status_pegawai) !== 'pns') {
             return redirect()->route('dosen.pangkat-golongan.index')
-                             ->with('error', 'Hanya pegawai PNS yang dapat mengajukan kenaikan pangkat.');
+                ->with('error', 'Hanya pegawai PNS yang dapat mengajukan kenaikan pangkat.');
         }
 
         $urutan_sekarang = $this->urutanMap[$pegawai->id_panggol ?? ''] ?? 0;
-        $jenis_pegawai   = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
-        $urutan_min      = ($jenis_pegawai === 'dosen') ? 9 : 5;
-        $urutan_target   = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
-        $sudahPuncak     = ($urutan_sekarang >= 17);
+        $jenis_pegawai = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
+        $urutan_min = ($jenis_pegawai === 'dosen') ? 9 : 5;
+        $urutan_target = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
+        $sudahPuncak = ($urutan_sekarang >= 17);
 
         $adaPending = PengajuanKenaikan::where('id_pegawai', $pegawai->id_pegawai)
+            ->where('jenis_pengajuan', 'kenaikan_pangkat') // <--- WAJIB DITAMBAHKAN
             ->whereIn('status_pengajuan', ['menunggu', 'verifikasi', 'persetujuan'])
             ->exists();
 
-        $pangkatList = PangkatGolongan::all()->sortBy(function($p) {
+        $pangkatList = PangkatGolongan::all()->sortBy(function ($p) {
             return $this->urutanMap[$p->id_panggol] ?? 99;
         });
 
         $semuaPangkat = [];
         foreach ($pangkatList as $p) {
-            $urutan         = $this->urutanMap[$p->id_panggol] ?? 0;
-            $p->urutan      = $urutan;
-            $p->bisa        = ($urutan === $urutan_target) && !$sudahPuncak;
+            $urutan = $this->urutanMap[$p->id_panggol] ?? 0;
+            $p->urutan = $urutan;
+            $p->bisa = ($urutan === $urutan_target) && !$sudahPuncak;
             $p->lebihRendah = ($urutan_sekarang > 0) && ($urutan <= $urutan_sekarang);
             $semuaPangkat[] = $p;
         }
 
         $jabfungToPangkat = [
-            'Asisten Ahli'  => ['min' => 10, 'max' => 10, 'label' => 'III/b'],
-            'Lektor'        => ['min' => 11, 'max' => 12, 'label' => 'III/c – III/d'],
+            'Asisten Ahli' => ['min' => 10, 'max' => 10, 'label' => 'III/b'],
+            'Lektor' => ['min' => 11, 'max' => 12, 'label' => 'III/c – III/d'],
             'Lektor Kepala' => ['min' => 13, 'max' => 14, 'label' => 'IV/a – IV/b'],
-            'Guru Besar'    => ['min' => 15, 'max' => 17, 'label' => 'IV/c – IV/e'],
+            'Guru Besar' => ['min' => 15, 'max' => 17, 'label' => 'IV/c – IV/e'],
         ];
 
         $jabfungSekarang = $pegawai->jabatanFungsional->jenis_jabfung ?? null;
-        $jabfungInfo     = $jabfungSekarang ? ($jabfungToPangkat[$jabfungSekarang] ?? null) : null;
+        $jabfungInfo = $jabfungSekarang ? ($jabfungToPangkat[$jabfungSekarang] ?? null) : null;
 
         $identitas_label = ($jenis_pegawai === 'dosen') ? 'NIDN' : 'NIP';
         $identitas_value = ($jenis_pegawai === 'dosen') ? ($pegawai->nidn ?? '-') : ($pegawai->nip ?? '-');
 
         return view('dosen.pangkat.form', compact(
-            'pegawai', 'semuaPangkat', 'urutan_sekarang', 'urutan_target',
-            'sudahPuncak', 'adaPending', 'jabfungSekarang', 'jabfungInfo',
-            'identitas_label', 'identitas_value'
+            'pegawai',
+            'semuaPangkat',
+            'urutan_sekarang',
+            'urutan_target',
+            'sudahPuncak',
+            'adaPending',
+            'jabfungSekarang',
+            'jabfungInfo',
+            'identitas_label',
+            'identitas_value'
         ));
     }
 
@@ -161,59 +194,61 @@ class PangkatController extends Controller
     {
         $pegawai = $this->getPegawai();
 
-        // Gunakan validasi bawaan Laravel (The Laravel Way)
+        // 1. Validasi Input
         $request->validate([
             'target_panggol' => 'required|string',
-            'nomor_usulan'   => 'required|string|max:100',
-            'sk_cpns'        => 'required|file|mimes:pdf|max:5120',
-            'sk_pns'         => 'required|file|mimes:pdf|max:5120',
-            'pak'            => 'required|file|mimes:pdf|max:5120',
-            'publikasi'      => 'nullable|file|mimes:pdf|max:10240',
+            'nomor_usulan' => 'required|string|max:100',
+            'sk_cpns' => 'required|file|mimes:pdf|max:5120',
+            'sk_pns' => 'required|file|mimes:pdf|max:5120',
+            'pak' => 'required|file|mimes:pdf|max:5120',
+            'publikasi' => 'nullable|file|mimes:pdf|max:10240',
         ], [
             'sk_cpns.required' => 'SK CPNS wajib diunggah.',
-            'sk_pns.required'  => 'SK PNS wajib diunggah.',
-            'pak.required'     => 'PAK wajib diunggah.'
+            'sk_pns.required' => 'SK PNS wajib diunggah.',
+            'pak.required' => 'PAK wajib diunggah.'
         ]);
 
+        // 2. Cek Urutan Pangkat
         $urutan_sekarang = $this->urutanMap[$pegawai->id_panggol ?? ''] ?? 0;
-        $jenis_pegawai   = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
-        $urutan_min      = ($jenis_pegawai === 'dosen') ? 9 : 5;
-        $urutan_target   = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
-
-        $urutanDiajukan = $this->urutanMap[$request->target_panggol] ?? 0;
+        $jenis_pegawai = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
+        $urutan_min = ($jenis_pegawai === 'dosen') ? 9 : 5;
+        $urutan_target = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
+        $urutanDiajukan = $this->urutanMap[(int)$request->target_panggol] ?? 0;
 
         if ($urutanDiajukan !== $urutan_target) {
             return back()->with('error', 'Pangkat tidak valid. Hanya satu langkah kenaikan yang diperbolehkan.');
         }
 
-        $jabfungSekarang = $pegawai->jabatanFungsional->jenis_jabfung ?? null;
-        $jabfungToPangkat = [
-            'Asisten Ahli'  => ['min' => 10, 'max' => 10],
-            'Lektor'        => ['min' => 11, 'max' => 12],
-            'Lektor Kepala' => ['min' => 13, 'max' => 14],
-            'Guru Besar'    => ['min' => 15, 'max' => 17],
-        ];
-
-        if ($jabfungSekarang && isset($jabfungToPangkat[$jabfungSekarang])) {
-            if ($urutanDiajukan > $jabfungToPangkat[$jabfungSekarang]['max']) {
-                return back()->with('error', "Pangkat melebihi batas jabfung Anda ({$jabfungSekarang}).");
-            }
-        }
-
+        // 3. Simpan ke Database
         DB::beginTransaction();
         try {
             $lastId = PengajuanKenaikan::max('id_pengajuan') ?? 0;
-            
+
+            // Buat pengajuan sekali saja
             $pengajuan = PengajuanKenaikan::create([
-                'id_pengajuan'        => $lastId + 1,
-                'id_pegawai'          => $pegawai->id_pegawai,
-                'jenis_pengajuan'     => 'kenaikan_pangkat',
-                'target_panggol'      => $request->target_panggol,
-                'status_pengajuan'    => 'menunggu',
+                'id_pengajuan' => $lastId + 1,
+                'id_pegawai' => $pegawai->id_pegawai,
+                'jenis_pengajuan' => 'kenaikan_pangkat',
+                'target_panggol' => $request->target_panggol,
+                'status_pengajuan' => 'menunggu',
                 'keterangan_tambahan' => $request->nomor_usulan,
             ]);
 
+            // Upload berkas
             $this->uploadBerkas($request, $pengajuan, $pegawai->id_pegawai);
+
+            // Buat Verifikasi
+            $berkasUtama = Berkas::where('id_pengajuan', $pengajuan->id_pengajuan)->first();
+            if ($berkasUtama) {
+                Verifikasi::create([
+                    'id_berkas' => $berkasUtama->id_berkas,
+                    'jenis_verifikasi' => Verifikasi::JENIS_PANGKAT,
+                    'status_verifikasi' => 'Menunggu Diproses',
+                    'tanggal_pengajuan' => Carbon::today(),
+                    'tanggal_proses' => null,
+                    'keterangan' => '-',
+                ]);
+            }
 
             DB::commit();
             return redirect()->route('dosen.pangkat-golongan.index')->with('success', 'Pengajuan berhasil dikirim.');
@@ -230,34 +265,34 @@ class PangkatController extends Controller
     public function show($id)
     {
         $pegawai = $this->getPegawai();
-        
+
         $data = PengajuanKenaikan::with(['berkas', 'pangkatGolongan'])
             ->where('id_pegawai', $pegawai->id_pegawai)
             ->findOrFail($id);
 
-        $data->nama_lengkap  = $pegawai->nama_lengkap;
-        $data->nip           = $pegawai->nip;
-        $data->nidn          = $pegawai->nidn;
+        $data->nama_lengkap = $pegawai->nama_lengkap;
+        $data->nip = $pegawai->nip;
+        $data->nidn = $pegawai->nidn;
         $data->jenis_pangkat = $data->pangkatGolongan->jenis_pangkat ?? '-';
 
         $berkasAda = $data->berkas->keyBy('jenis_berkas')->toArray();
 
         $statusMap = [
-            'menunggu'          => ['label' => 'Menunggu Verifikasi',  'class' => 'bg-warning text-dark', 'icon' => 'bi-hourglass-split'],
-            'verifikasi'        => ['label' => 'Sedang Diverifikasi',  'class' => 'bg-info text-dark',    'icon' => 'bi-search'],
-            'persetujuan'       => ['label' => 'Menunggu Persetujuan', 'class' => 'bg-primary',           'icon' => 'bi-person-check'],
-            'disetujui'         => ['label' => 'Disetujui',            'class' => 'bg-success',           'icon' => 'bi-check-circle-fill'],
-            'tolak_verifikasi'  => ['label' => 'Ditolak Verifikasi',   'class' => 'bg-danger',            'icon' => 'bi-x-circle-fill'],
-            'tolak_persetujuan' => ['label' => 'Ditolak Persetujuan',  'class' => 'bg-danger',            'icon' => 'bi-x-circle-fill'],
+            'menunggu' => ['label' => 'Menunggu Verifikasi', 'class' => 'bg-warning text-dark', 'icon' => 'bi-hourglass-split'],
+            'verifikasi' => ['label' => 'Sedang Diverifikasi', 'class' => 'bg-info text-dark', 'icon' => 'bi-search'],
+            'persetujuan' => ['label' => 'Menunggu Persetujuan', 'class' => 'bg-primary', 'icon' => 'bi-person-check'],
+            'disetujui' => ['label' => 'Disetujui', 'class' => 'bg-success', 'icon' => 'bi-check-circle-fill'],
+            'tolak_verifikasi' => ['label' => 'Ditolak Verifikasi', 'class' => 'bg-danger', 'icon' => 'bi-x-circle-fill'],
+            'tolak_persetujuan' => ['label' => 'Ditolak Persetujuan', 'class' => 'bg-danger', 'icon' => 'bi-x-circle-fill'],
         ];
         $st = $statusMap[$data->status_pengajuan] ?? ['label' => $data->status_pengajuan, 'class' => 'bg-secondary', 'icon' => 'bi-question-circle'];
 
         $jenis_pegawai = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
-        $identitas     = ($jenis_pegawai === 'dosen') ? 'NIDN' : 'NIP';
-        $idValue       = ($jenis_pegawai === 'dosen') ? ($pegawai->nidn ?? '-') : ($pegawai->nip ?? '-');
+        $identitas = ($jenis_pegawai === 'dosen') ? 'NIDN' : 'NIP';
+        $idValue = ($jenis_pegawai === 'dosen') ? ($pegawai->nidn ?? '-') : ($pegawai->nip ?? '-');
 
         $berkasError = [];
-        $riwayat     = [];
+        $riwayat = [];
 
         return view('dosen.pangkat.show', compact('data', 'berkasAda', 'riwayat', 'st', 'identitas', 'idValue', 'berkasError'));
     }
@@ -265,7 +300,7 @@ class PangkatController extends Controller
     public function edit($id)
     {
         $pegawai = $this->getPegawai();
-        $mode    = request('mode', 'edit');
+        $mode = request('mode', 'edit');
 
         $data = PengajuanKenaikan::with(['berkas', 'pangkatGolongan'])
             ->where('id_pegawai', $pegawai->id_pegawai)
@@ -278,34 +313,34 @@ class PangkatController extends Controller
             return redirect()->route('dosen.pangkat-golongan.index')->with('error', 'Hanya pengajuan Menunggu yang dapat diedit.');
         }
 
-        $data->nama_lengkap       = $pegawai->nama_lengkap;
-        $data->nip                = $pegawai->nip;
-        $data->nidn               = $pegawai->nidn;
+        $data->nama_lengkap = $pegawai->nama_lengkap;
+        $data->nip = $pegawai->nip;
+        $data->nidn = $pegawai->nidn;
         $data->jenis_pangkat_skrg = $pegawai->pangkatGolongan->jenis_pangkat ?? 'Belum ada';
 
         $urutan_sekarang = $this->urutanMap[$pegawai->id_panggol ?? ''] ?? 0;
-        $jenis_pegawai   = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
-        $urutan_min      = ($jenis_pegawai === 'dosen') ? 9 : 5;
-        $urutan_target   = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
-        $sudahPuncak     = ($urutan_sekarang >= 17);
+        $jenis_pegawai = !empty($pegawai->nidn) ? 'dosen' : 'tendik';
+        $urutan_min = ($jenis_pegawai === 'dosen') ? 9 : 5;
+        $urutan_target = ($urutan_sekarang === 0) ? $urutan_min : $urutan_sekarang + 1;
+        $sudahPuncak = ($urutan_sekarang >= 17);
 
         $berkasAda = $data->berkas->keyBy('jenis_berkas')->toArray();
 
         $semuaPangkat = [];
         foreach (PangkatGolongan::all() as $p) {
-            $urutan         = $this->urutanMap[$p->id_panggol] ?? 0;
-            $p->urutan      = $urutan;
-            $p->bisa        = ($urutan === $urutan_target) && !$sudahPuncak;
+            $urutan = $this->urutanMap[$p->id_panggol] ?? 0;
+            $p->urutan = $urutan;
+            $p->bisa = ($urutan === $urutan_target) && !$sudahPuncak;
             $p->lebihRendah = ($urutan_sekarang > 0) && ($urutan <= $urutan_sekarang);
             $semuaPangkat[] = $p;
         }
 
         $jabfungSekarang = $pegawai->jabatanFungsional->jenis_jabfung ?? null;
         $jabfungToPangkat = [
-            'Asisten Ahli'  => ['min' => 10, 'max' => 10],
-            'Lektor'        => ['min' => 11, 'max' => 12],
+            'Asisten Ahli' => ['min' => 10, 'max' => 10],
+            'Lektor' => ['min' => 11, 'max' => 12],
             'Lektor Kepala' => ['min' => 13, 'max' => 14],
-            'Guru Besar'    => ['min' => 15, 'max' => 17],
+            'Guru Besar' => ['min' => 15, 'max' => 17],
         ];
         $jabfungInfo = $jabfungSekarang ? ($jabfungToPangkat[$jabfungSekarang] ?? null) : null;
 
@@ -315,23 +350,23 @@ class PangkatController extends Controller
     public function update(Request $request, $id)
     {
         $pegawai = $this->getPegawai();
-        $mode    = $request->mode ?? 'edit';
+        $mode = $request->mode ?? 'edit';
 
         $pengajuan = PengajuanKenaikan::with('berkas')->where('id_pegawai', $pegawai->id_pegawai)->findOrFail($id);
         $berkasAda = $pengajuan->berkas->keyBy('jenis_berkas');
 
         $request->validate([
             'target_panggol' => 'required|string',
-            'nomor_usulan'   => 'required|string|max:100',
-            'sk_cpns'        => ($berkasAda->has('sk_cpns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'sk_pns'         => ($berkasAda->has('sk_pns')  ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'pak'            => ($berkasAda->has('pak')     ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
-            'publikasi'      => 'nullable|file|mimes:pdf|max:10240',
+            'nomor_usulan' => 'required|string|max:100',
+            'sk_cpns' => ($berkasAda->has('sk_cpns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'sk_pns' => ($berkasAda->has('sk_pns') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'pak' => ($berkasAda->has('pak') ? 'nullable' : 'required') . '|file|mimes:pdf|max:5120',
+            'publikasi' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
-        $urutanDiajukan  = $this->urutanMap[$request->target_panggol] ?? 0;
+        $urutanDiajukan = $this->urutanMap[$request->target_panggol] ?? 0;
         $urutan_sekarang = $this->urutanMap[$pegawai->id_panggol ?? ''] ?? 0;
-        $urutan_target   = ($urutan_sekarang === 0) ? 9 : $urutan_sekarang + 1;
+        $urutan_target = ($urutan_sekarang === 0) ? 9 : $urutan_sekarang + 1;
 
         if ($urutanDiajukan !== $urutan_target) {
             return back()->with('error', 'Pangkat tidak valid.');
@@ -340,8 +375,8 @@ class PangkatController extends Controller
         DB::beginTransaction();
         try {
             $pengajuan->update([
-                'target_panggol'      => $request->target_panggol,
-                'status_pengajuan'    => 'menunggu',
+                'target_panggol' => $request->target_panggol,
+                'status_pengajuan' => 'menunggu',
                 'keterangan_tambahan' => $request->nomor_usulan,
             ]);
 
@@ -359,7 +394,7 @@ class PangkatController extends Controller
     public function destroy($id)
     {
         $pegawai = $this->getPegawai();
-        
+
         $pengajuan = PengajuanKenaikan::with('berkas')->where('id_pegawai', $pegawai->id_pegawai)->findOrFail($id);
 
         if (!in_array($pengajuan->status_pengajuan, ['menunggu', 'draft'])) {
