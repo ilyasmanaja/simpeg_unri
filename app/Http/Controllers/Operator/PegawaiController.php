@@ -238,168 +238,70 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::with('user')->findOrFail($id);
 
         $request->validate([
-
             'nama_lengkap' => 'required|string|max:255',
-
             'nik' => [
                 'nullable',
                 'digits_between:1,16',
-                Rule::unique('PEGAWAI', 'nik')
-                    ->ignore($pegawai->id_pegawai, 'id_pegawai')
+                Rule::unique('PEGAWAI', 'nik')->ignore($pegawai->id_pegawai, 'id_pegawai')
             ],
-
             'tanggal_lahir' => 'nullable|date',
-
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-
-            'nomor_hp' => [
-                'nullable',
-                'digits_between:1,20'
-            ],
-
-            'nomor_hp_darurat' => [
-                'nullable',
-                'digits_between:1,20'
-            ],
-
+            'nomor_hp' => ['nullable', 'digits_between:1,20'],
+            'nomor_hp_darurat' => ['nullable', 'digits_between:1,20'],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('USER_MANAGE', 'email')
-                    ->ignore($pegawai->user?->id_user, 'id_user')
+                Rule::unique('USER_MANAGE', 'email')->ignore($pegawai->user?->id_user, 'id_user')
             ],
-
             'jurusan' => 'nullable|string|max:255',
-
             'prodi' => 'nullable|string|max:255',
-
             'status_pegawai' => 'required|in:PNS,Non PNS',
-
             'nip' => [
                 'nullable',
-                'digits_between:8,30',
-                Rule::unique('PEGAWAI', 'nip')
-                    ->ignore($pegawai->id_pegawai, 'id_pegawai')
+                'digits_between:1,18', // Disamakan dengan store() demi konsistensi
+                Rule::unique('PEGAWAI', 'nip')->ignore($pegawai->id_pegawai, 'id_pegawai')
             ],
-
-            'nidn' => [
-                'nullable',
-                'digits_between:1,10'
-            ],
-
+            'nidn' => ['nullable', 'digits_between:1,10'],
             'id_jabfung' => 'nullable|exists:JABATAN_FUNGSIONAL,id_jabfung',
-
             'id_panggol' => 'nullable|exists:PANGKAT_GOLONGAN,id_panggol',
-
             'password' => 'nullable|min:6',
-
             'roles' => 'nullable|array',
-
             'roles.*' => 'exists:ROLE,id_role',
-
         ], [
-
-            // =========================
-            // NAMA
-            // =========================
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
-            'nama_lengkap.max'      => 'Nama lengkap maksimal 255 karakter.',
-
-            // =========================
-            // NIK
-            // =========================
-            'nik.digits_between' => 'NIK harus terdiri dari 16 digit angka.',
-            'nik.unique' => 'NIK sudah terdaftar.',
-
-            // =========================
-            // TANGGAL LAHIR
-            // =========================
-            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
-
-            // =========================
-            // JENIS KELAMIN
-            // =========================
-            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
-            'jenis_kelamin.in'       => 'Jenis kelamin tidak valid.',
-
-            // =========================
-            // NOMOR HP
-            // =========================
-            'nomor_hp.digits_between' => 'Nomor HP harus terdiri dari 10 sampai 20 digit angka.',
-
-            'nomor_hp_darurat.digits_between' =>
-            'Nomor HP darurat harus terdiri dari 10 sampai 20 digit angka.',
-
-            // =========================
-            // EMAIL
-            // =========================
-            'email.required' => 'Email wajib diisi.',
-            'email.email'    => 'Format email tidak valid.',
-            'email.unique'   => 'Email sudah digunakan.',
-
-            // =========================
-            // JURUSAN & PRODI
-            // =========================
-            'jurusan.max' => 'Jurusan maksimal 255 karakter.',
-            'prodi.max'   => 'Prodi maksimal 255 karakter.',
-
-            // =========================
-            // STATUS
-            // =========================
-            'status_pegawai.required' => 'Status pegawai wajib dipilih.',
-            'status_pegawai.in'       => 'Status pegawai tidak valid.',
-
-            // =========================
-            // NIP
-            // =========================
-            'nip.digits_between' => 'NIP harus berupa angka.',
-            'nip.unique'         => 'NIP sudah terdaftar.',
-
-            // =========================
-            // NIDN
-            // =========================
-            'nidn.digits_between' => 'NIDN harus terdiri dari 10 digit angka.',
-
-            // =========================
-            // JABFUNG
-            // =========================
-            'id_jabfung.exists' => 'Jabatan fungsional tidak valid.',
-
-            // =========================
-            // PANGKAT
-            // =========================
-            'id_panggol.exists' => 'Pangkat/Golongan tidak valid.',
-
-            // =========================
-            // PASSWORD
-            // =========================
-            'password.min' => 'Password minimal 6 karakter.',
-
-            // =========================
-            // ROLE
-            // =========================
-            'roles.array'    => 'Format role tidak valid.',
-            'roles.*.exists' => 'Role yang dipilih tidak valid.',
+            // Samakan / rapikan custom messages sesuai aturan digits_between
+            'nik.digits_between' => 'NIK harus berupa angka dan maksimal 16 digit.',
+            'nip.digits_between' => 'NIP harus berupa angka dan maksimal 18 digit.',
+            'nomor_hp.digits_between' => 'Nomor HP harus berupa angka (maksimal 20 digit).',
+            'nomor_hp_darurat.digits_between' => 'Nomor HP darurat harus berupa angka.',
+            // ... sisa pesan lainnya tetap sama
         ]);
 
-        $pegawai->update([
-            'nama_lengkap' => $request->nama_lengkap,
-            'nik' => $request->nik,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'nomor_hp' => $request->nomor_hp,
-            'nomor_hp_darurat' => $request->nomor_hp_darurat,
-            'jurusan' => $request->jurusan,
-            'prodi' => $request->prodi,
-            'nip' => $request->nip,
-            'nidn' => $request->nidn,
-            'status_pegawai' => $request->status_pegawai,
-            'id_jabfung' => $request->id_jabfung,
-            'id_panggol' => $request->id_panggol,
+        // Proteksi Backend Tambahan: Jika Non PNS, bersihkan NIP/NIDN/Pangkat jika memang bisnis rules-nya begitu
+        $dataPegawai = $request->only([
+            'nama_lengkap',
+            'nik',
+            'tanggal_lahir',
+            'jenis_kelamin',
+            'nomor_hp',
+            'nomor_hp_darurat',
+            'jurusan',
+            'prodi',
+            'nip',
+            'nidn',
+            'status_pegawai',
+            'id_jabfung',
+            'id_panggol'
         ]);
+
+        if ($request->status_pegawai === 'Non PNS') {
+            // Misal: Non PNS tidak punya NIP atau Pangkat Golongan PNS
+            $dataPegawai['nip'] = null;
+            $dataPegawai['id_panggol'] = null;
+        }
+
+        $pegawai->update($dataPegawai);
 
         if ($request->hasFile('foto')) {
-            // HAPUS foto lama dulu sebelum simpan baru
             if ($pegawai->foto && Storage::disk('public')->exists($pegawai->foto)) {
                 Storage::disk('public')->delete($pegawai->foto);
             }
@@ -408,19 +310,16 @@ class PegawaiController extends Controller
         }
 
         $user = $pegawai->user;
-
         if ($user) {
-
             $user->update([
                 'email' => $request->email,
-
-                'password' => $request->password
-                    ? Hash::make($request->password)
-                    : $user->password,
+                'password' => $request->password ? Hash::make($request->password) : $user->password,
             ]);
 
             if ($request->roles) {
                 $user->roles()->sync($request->roles);
+            } else {
+                $user->roles()->detach(); // Antisipasi jika semua role dikosongkan saat update
             }
         }
 

@@ -583,8 +583,6 @@
 
 
 @push('scripts')
-  <script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>  
-
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -1014,5 +1012,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+
 @endpush
 
+@push('scripts')
+  <script src="{{ asset('assets/manajemen_akun/manajemen_akun.js') }}"></script>  
+@endpush
